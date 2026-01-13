@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizar Etiqueta</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar-custom {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .navbar-brand {
+            color: #667eea !important;
+            font-weight: 700;
+        }
+
+        .nav-link {
+            color: #555 !important;
+        }
+
+        .nav-link:hover {
+            color: #667eea !important;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .etiqueta-container {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .print-info {
+            background: #e7f3ff;
+            border: 1px solid #b6d4fe;
+            color: #084298;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* ===== ETIQUETA - IGUAL AO ORIGINAL ===== */
+        .etiqueta-preview {
+            background: white;
+            color: #1a1a1a;
+            padding: calc(1mm * 3.78px) calc(1.2mm * 3.78px);
+            border-radius: 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            width: calc({{ configuracoes.largura }} * 3.78px);
+            height: calc({{ configuracoes.altura }} * 3.78px);
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            border: 3px solid #e0e6ed;
+            font-size: {{ configuracoes.tamanho_fonte }}pt;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .etiqueta-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        }
+
+        .etiqueta-header {
+            text-align: center;
+            background: white;
+            margin: calc(-1mm * 3.78px) calc(-1.2mm * 3.78px) calc(0.2mm * 3.78px) calc(-1.2mm * 3.78px);
+            padding: calc(0.3mm * 3.78px) calc(1.2mm * 3.78px);
+            border-bottom: 1px solid #333;
+            flex-shrink: 0;
+        }
+
+        .etiqueta-title {
+            font-size: calc({{ configuracoes.tamanho_fonte }}pt * 1.5);
+            font-weight: 700;
+            margin-bottom: 2px;
+            color: #2c3e50;
+        }
+
+        .etiqueta-codigo-grande {
+            font-size: calc({{ configuracoes.tamanho_fonte }}pt * 1.3);
+            color: #495057;
+            font-weight: bold;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            background: #fff;
+            padding: 2px 4px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            display: inline-block;
+        }
+
+        .etiqueta-body {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .etiqueta-field {
+            margin-bottom: calc(0.3mm * 3.78px);
+            background: white;
+            padding: calc(0.2mm * 3.78px) 0;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: calc(0.5px * 3.78px);
+            font-size: {{ configuracoes.tamanho_fonte }}pt;
+        }
+
+        .field-label {
+            font-weight: 600;
+            font-size: calc({{ configuracoes.tamanho_fonte }}pt * 0.85);
+            color: #495057;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .field-value {
+            font-size: calc({{ configuracoes.tamanho_fonte }}pt * 1);
+            color: #212529;
+            font-weight: 500;
+        }
+
+        .barcode-section {
+            text-align: center;
+            margin: calc(0.1mm * 3.78px) 0;
+            padding: calc(0.2mm * 3.78px);
+            background: white;
+            border: 1px solid #333;
+            flex-shrink: 0;
+        }
+
+        .barcode-section h4 {
+            font-size: calc({{ configuracoes.tamanho_fonte }}pt * 0.8);
+            color: #000;
+            font-weight: 600;
+            margin-bottom: calc(0.2mm * 3.78px);
+            margin-top: 0;
+            text-transform: uppercase;
+        }
+
+        .barcode-image {
+            max-width: calc({{ configuracoes.largura }} * 3.78px * 0.75);
+            height: auto;
+            max-height: calc({{ configuracoes.altura }} * 3.78px * 0.14);
+        }
+
+        .barcode-text {
+            font-family: 'Courier New', monospace;
+            font-size: calc({{ configuracoes.tamanho_fonte }}pt * 0.9);
+            margin-top: calc(0.1mm * 3.78px);
+            letter-spacing: 1px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .actions-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        /* ===== PRINT STYLES - IGUAL AO ORIGINAL ===== */
+        @media print {
+            @page {
+                size: {{ configuracoes.largura }}mm {{ configuracoes.altura }}mm;
+                margin: 0;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                width: {{ configuracoes.largura }}mm;
+                height: {{ configuracoes.altura }}mm;
+            }
+
+            body * {
+                visibility: hidden;
+            }
+
+            .etiqueta-preview, .etiqueta-preview * {
+                visibility: visible;
+            }
+
+            .etiqueta-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: {{ configuracoes.largura }}mm !important;
+                height: {{ configuracoes.altura }}mm !important;
+                margin: 0 !important;
+                padding: 1mm 1.2mm !important;
+                box-shadow: none !important;
+                border: none !important;
+                background: white !important;
+                font-size: {{ configuracoes.tamanho_fonte }}pt !important;
+            }
+
+            .etiqueta-preview::before {
+                display: none;
+            }
+
+            .etiqueta-header {
+                background: white !important;
+                margin: 0.2mm -1.2mm 0.2mm -1.2mm;
+                padding: 0.3mm 1.2mm;
+                border-bottom: 1px solid #333;
+            }
+
+            .etiqueta-field {
+                background: white !important;
+                padding: 0.2mm 0;
+                margin-bottom: 0.3mm;
+                font-size: {{ configuracoes.tamanho_fonte }}pt !important;
+            }
+
+            .barcode-section {
+                background: white !important;
+                border: 1px solid #333 !important;
+                margin: 0.1mm 0;
+                padding: 0.2mm;
+            }
+
+            .navbar-custom, .page-header, .actions-section, .print-info {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .etiqueta-preview {
+                width: 95% !important;
+                height: auto !important;
+                max-width: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('etiqueta.home') }}">
+                <i class="bx bx-barcode"></i> Sistema de Etiquetas
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('etiqueta.home') }}">
+                            <i class="bx bx-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('etiqueta.gerar_etiqueta') }}">
+                            <i class="bx bx-plus-circle"></i> Gerar Etiqueta
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('etiqueta.listar_produtos_view') }}">
+                            <i class="bx bx-package"></i> Produtos
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <i class="bx bx-show"></i> Visualizar Etiqueta
+            </div>
+            <p>Confira a etiqueta e imprima se estiver correta</p>
+        </div>
+
+        <div class="etiqueta-container">
+            <div class="print-info">
+                <i class="bx bx-info-circle"></i>
+                <strong>Dica:</strong> Use o botao "Imprimir" ou Ctrl+P para imprimir apenas a etiqueta.
+            </div>
+
+            <div class="etiqueta-preview">
+                <div class="etiqueta-header">
+                    {% if dados.descricao %}
+                        <div class="etiqueta-title">{{ dados.descricao }}</div>
+                    {% endif %}
+                    {% if dados.codigo_etiqueta %}
+                        <div class="etiqueta-codigo-grande">
+                            <strong>Cod: {{ dados.codigo_etiqueta }}</strong>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="etiqueta-body">
+                    {% if dados.peso %}
+                    <div class="etiqueta-field">
+                        <span class="field-label">Peso:</span>
+                        <span class="field-value">{{ dados.peso }} kg</span>
+                    </div>
+                    {% endif %}
+
+                    {% if dados.data_fabricacao_formatada %}
+                    <div class="etiqueta-field">
+                        <span class="field-label">Fab:</span>
+                        <span class="field-value">{{ dados.data_fabricacao_formatada }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if dados.validade_meses %}
+                    <div class="etiqueta-field">
+                        <span class="field-label">Val:</span>
+                        <span class="field-value">{{ dados.validade_meses }} meses</span>
+                    </div>
+                    {% endif %}
+
+                    {% if dados.cnpj %}
+                    <div class="etiqueta-field">
+                        <span class="field-label">CNPJ:</span>
+                        <span class="field-value">
+                            {% if dados.cnpj|length == 14 %}
+                                {{ dados.cnpj[:2] }}.{{ dados.cnpj[2:5] }}.{{ dados.cnpj[5:8] }}/{{ dados.cnpj[8:12] }}-{{ dados.cnpj[12:14] }}
+                            {% else %}
+                                {{ dados.cnpj }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% endif %}
+
+                    {% if codigo_barras_img %}
+                    <div class="barcode-section">
+                        <h4>Codigo de Barras da DUN</h4>
+                        <img src="data:image/png;base64,{{ codigo_barras_img }}" alt="DUN" class="barcode-image">
+                        <div class="barcode-text">{{ dados.codigo_barras }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if codigo_barras_lote_img %}
+                    <div class="barcode-section">
+                        <h4>Codigo de Barras do Lote</h4>
+                        <img src="data:image/png;base64,{{ codigo_barras_lote_img }}" alt="Lote" class="barcode-image">
+                        <div class="barcode-text">{{ dados.codigo_barras_lote }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="actions-section">
+            <a href="{{ url_for('etiqueta.gerar_etiqueta') }}" class="btn btn-secondary me-2">
+                <i class="bx bx-edit"></i> Editar
+            </a>
+            <button onclick="window.print()" class="btn btn-primary me-2">
+                <i class="bx bx-printer"></i> Imprimir
+            </button>
+            <a href="{{ url_for('etiqueta.nova_etiqueta') }}" class="btn btn-success">
+                <i class="bx bx-plus"></i> Nova Etiqueta
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>

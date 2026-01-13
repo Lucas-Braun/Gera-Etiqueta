@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Etiquetas{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="{{ url_for('etiqueta.home') }}">Sistema de Etiquetas</a>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="{{ url_for('etiqueta.home') }}">Home</a></li>
+            <li><a href="{{ url_for('etiqueta.gerar_etiqueta') }}">Gerar Etiqueta</a></li>
+            <li><a href="{{ url_for('etiqueta.listar_produtos_view') }}">Produtos</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                        <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='JS/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,4 @@
+flask
+python-barcode
+pillow
+python-dateutil

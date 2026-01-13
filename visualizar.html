@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizar Etiqueta</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/navegar/sidebar.css') }}">
+    
+    <style>
+        body {
+            background: #0b0c10;
+            color: #c5c6c7;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+            background: #1a1d21;
+            transition: margin-left 0.3s;
+        }
+
+        .sidebar.compact ~ .content {
+            margin-left: 80px;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .etiqueta-container {
+            background: rgba(31, 40, 51, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(102, 252, 241, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .etiqueta-preview {
+            background: white;
+            color: #1a1a1a;
+            padding: calc(1mm * 3.78px) calc(1.2mm * 3.78px);
+            border-radius: 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            width: calc({{ configuracoes.largura }} * 3.78px);
+            height: calc({{ configuracoes.altura }} * 3.78px);
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            border: 3px solid #e0e6ed;
+            font-size: {{ configuracoes.tamanho_fonte }}pt;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-sizing: border-box;
+        }
+        
+        .etiqueta-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .etiqueta-header {
+            text-align: center;
+            background: white;
+            margin: calc(-1mm * 3.78px) calc(-1.2mm * 3.78px) calc(0.2mm * 3.78px) calc(-1.2mm * 3.78px);
+            padding: calc(0.3mm * 3.78px) calc(1.2mm * 3.78px);
+            border-radius: 0;
+            border-bottom: 1px solid #333;
+            flex-shrink: 0;
+        }
+
+        .etiqueta-title {
+            font-size: calc({{ configuracoes.tamanho_fonte }}pt * 1.5);
+            font-weight: 700;
+            margin-bottom: 2px;
+            color: #2c3e50;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .etiqueta-codigo {
+            font-size: calc({{ configuracoes.tamanho_fonte }}pt * 0.85);
+            color: #6c757d;
+        }
+
+        .etiqueta-codigo-grande {
+            font-size: calc({{ configuracoes.tamanho_fonte }}pt * 1.3);
+            color: #495057;
+            font-weight: bold;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            background: #fff;
+            padding: 2px 4px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            display: inline-block;
+        }
+
+        .etiqueta-field {
+            margin-bottom: calc(0.3mm * 3.78px);
+            background: white;
+            padding: calc(0.2mm * 3.78px) 0;
+            border-radius: 0;
+            border-left: none;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: calc(0.5px * 3.78px);
+            font-size: {{ configuracoes.tamanho_fonte }}pt;
+        }
+
+        .etiqueta-field:last-child {
+            margin-bottom: 0;
+        }
+
+        .field-label {
+            font-weight: 600;
+            font-size: calc({{ configuracoes.tamanho_fonte }}pt * 0.85);
+            color: #495057;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+            margin-right: 0;
+        }
+
+        .field-value {
+            font-size: calc({{ configuracoes.tamanho_fonte }}pt * 1);
+            color: #212529;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .barcode-section {
+            text-align: center;
+            margin: calc(0.1mm * 3.78px) 0;
+            padding: calc(0.2mm * 3.78px);
+            background: white;
+            border-radius: 0;
+            border: 1px solid #333;
+            flex-shrink: 0;
+            box-shadow: none;
+        }
+        
+        .barcode-section h4 {
+            font-size: calc({{ configuracoes.tamanho_fonte }}pt * 0.8);
+            color: #000;
+            font-weight: 600;
+            margin-bottom: calc(0.2mm * 3.78px);
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .barcode-image {
+            max-width: calc({{ configuracoes.largura }} * 3.78px * 0.75);
+            height: auto;
+            max-height: calc({{ configuracoes.altura }} * 3.78px * 0.14);
+        }
+
+        .barcode-text {
+            font-family: 'Courier New', monospace;
+            font-size: calc({{ configuracoes.tamanho_fonte }}pt * 0.9);
+            margin-top: calc(0.1mm * 3.78px);
+            letter-spacing: 1px;
+            font-weight: bold;
+            color: #000;
+        }
+
+
+        .etiqueta-body {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #66fcf1 0%, #45b7b8 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-weight: 600;
+            color: #0b0c10;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #45b7b8 0%, #66fcf1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 252, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(31, 40, 51, 0.8);
+            border: 1px solid rgba(102, 252, 241, 0.3);
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-weight: 600;
+            color: #c5c6c7;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 252, 241, 0.1);
+            border-color: #66fcf1;
+            color: #66fcf1;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .actions-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .print-info {
+            background: rgba(23, 162, 184, 0.2);
+            border: 1px solid rgba(23, 162, 184, 0.3);
+            color: #17a2b8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @media print {
+            @page {
+                size: {{ configuracoes.largura }}mm {{ configuracoes.altura }}mm;
+                margin: 0;
+            }
+            
+            body {
+                margin: 0;
+                padding: 0;
+                width: {{ configuracoes.largura }}mm;
+                height: {{ configuracoes.altura }}mm;
+            }
+            
+            body * {
+                visibility: hidden;
+            }
+            
+            .etiqueta-preview, .etiqueta-preview * {
+                visibility: visible;
+            }
+            
+            .etiqueta-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: {{ configuracoes.largura }}mm !important;
+                height: {{ configuracoes.altura }}mm !important;
+                margin: 0 !important;
+                padding: 1mm 1.2mm !important;
+                box-shadow: none !important;
+                border: none !important;
+                background: white !important;
+                font-size: {{ configuracoes.tamanho_fonte }}pt !important;
+                transform: none !important;
+                border-radius: 0 !important;
+                overflow: hidden !important;
+                display: flex !important;
+                flex-direction: column !important;
+                box-sizing: border-box !important;
+            }
+            
+            .etiqueta-preview::before {
+                display: none;
+            }
+            
+            .etiqueta-header {
+                background: white !important;
+                margin: 0.2mm -1.2mm 0.2mm -1.2mm;
+                padding: 0.3mm 1.2mm;
+                border-radius: 0;
+                border-bottom: 1px solid #333;
+                flex-shrink: 0;
+                text-align: center !important;
+            }
+            
+            
+            .etiqueta-field {
+                background: white !important;
+                border-left: none !important;
+                padding: 0.2mm 0;
+                margin-bottom: 0.3mm;
+                font-size: {{ configuracoes.tamanho_fonte }}pt !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 0.5px !important;
+            }
+            
+            .field-label {
+                font-size: {{ configuracoes.tamanho_fonte }}pt !important;
+            }
+            
+            .field-value {
+                font-size: {{ configuracoes.tamanho_fonte }}pt !important;
+            }
+            
+            .etiqueta-body {
+                flex: 1 !important;
+                overflow: hidden !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            .barcode-section {
+                background: white !important;
+                border: 1px solid #333 !important;
+                margin: 0.1mm 0;
+                padding: 0.2mm;
+                page-break-inside: avoid;
+                text-align: center !important;
+                flex-shrink: 0;
+            }
+            
+            .barcode-section h4 {
+                font-size: calc({{ configuracoes.tamanho_fonte }}pt * 0.8) !important;
+                margin-bottom: 0.2mm;
+                margin-top: 0;
+            }
+            
+            .barcode-text {
+                font-size: calc({{ configuracoes.tamanho_fonte }}pt * 0.9) !important;
+                margin-top: 0.1mm;
+                font-weight: bold !important;
+            }
+            
+            .sidebar, .page-header, .actions-section, .print-info {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                margin-left: 0;
+                padding: 15px;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .etiqueta-container {
+                padding: 20px;
+            }
+            
+            .etiqueta-preview {
+                width: 95% !important;
+                height: auto !important;
+                max-width: 350px;
+                margin: 10px auto;
+            }
+
+            .barcode-image {
+                max-width: 90% !important;
+            }
+
+            .field-label {
+                min-width: 70px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'partials/navegar/sidebar.html' %}
+
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <i class="bx bx-show"></i>
+                Visualizar Etiqueta
+            </div>
+            <div class="page-subtitle">
+                Confira a etiqueta gerada e imprima se estiver correta
+            </div>
+        </div>
+
+        <div class="etiqueta-container">
+            <div class="print-info">
+                <i class="bx bx-info-circle"></i>
+                <strong>Dica:</strong> Use o botão "Imprimir" ou Ctrl+P para imprimir apenas a etiqueta.
+            </div>
+
+            <div class="etiqueta-preview" id="etiquetaPreview">
+                <div class="etiqueta-header">
+                    {% if dados.descricao %}
+                        <div class="etiqueta-title">{{ dados.descricao }}</div>
+                    {% endif %}
+                    {% if dados.codigo_etiqueta %}
+                        <div class="etiqueta-codigo-grande">
+                            <strong>Cód: {{ dados.codigo_etiqueta }}</strong>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="etiqueta-body">
+                    {% if dados.peso %}
+                    <div class="etiqueta-field">
+                        <span class="field-label">Peso:</span>
+                        <span class="field-value">{{ dados.peso }} kg</span>
+                    </div>
+                    {% endif %}
+
+                    {% if dados.data_fabricacao_formatada %}
+                    <div class="etiqueta-field">
+                        <span class="field-label">Fab:</span>
+                        <span class="field-value">{{ dados.data_fabricacao_formatada }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if dados.validade_meses %}
+                    <div class="etiqueta-field">
+                        <span class="field-label">Val:</span>
+                        <span class="field-value">{{ dados.validade_meses }} meses</span>
+                    </div>
+                    {% endif %}
+
+                    {% if dados.cnpj %}
+                    <div class="etiqueta-field">
+                        <span class="field-label">CNPJ:</span>
+                        <span class="field-value">
+                            {% if dados.cnpj|length == 14 %}
+                                {{ dados.cnpj[:2] }}.{{ dados.cnpj[2:5] }}.{{ dados.cnpj[5:8] }}/{{ dados.cnpj[8:12] }}-{{ dados.cnpj[12:14] }}
+                            {% else %}
+                                {{ dados.cnpj }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% endif %}
+
+
+                    {% if codigo_barras_img %}
+                    <div class="barcode-section" id="barcode-dun">
+                        <h4>Código de Barras da DUN</h4>
+                        <img src="data:image/png;base64,{{ codigo_barras_img }}" 
+                             alt="DUN: {{ dados.codigo_barras }}" 
+                             class="barcode-image"
+                             data-tipo="dun"
+                             data-valor="{{ dados.codigo_barras }}">
+                        <div class="barcode-text" data-tipo="dun-text">{{ dados.codigo_barras }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if codigo_barras_lote_img %}
+                    <div class="barcode-section" id="barcode-lote">
+                        <h4>Código de Barras do Lote</h4>
+                        <img src="data:image/png;base64,{{ codigo_barras_lote_img }}" 
+                             alt="LOTE: {{ dados.codigo_barras_lote }}" 
+                             class="barcode-image"
+                             data-tipo="lote"
+                             data-valor="{{ dados.codigo_barras_lote }}">
+                        <div class="barcode-text" data-tipo="lote-text">{{ dados.codigo_barras_lote }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+        <div class="actions-section">
+            <a href="/etiqueta/gerar" class="btn btn-secondary me-2">
+                <i class="bx bx-edit"></i>
+                Editar
+            </a>
+            <button onclick="window.print()" class="btn btn-primary me-2">
+                <i class="bx bx-printer"></i>
+                Imprimir
+            </button>
+            <a href="/etiqueta/nova" class="btn btn-success">
+                <i class="bx bx-plus"></i>
+                Nova Etiqueta
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='JS/navegar/sidebar.js') }}"></script>
+    
+    <script>
+        // Função para imprimir apenas a etiqueta
+        function printEtiqueta() {
+            window.print();
+        }
+
+        // Atalho de teclado para impressão
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                printEtiqueta();
+            }
+        });
+
+        // Mostrar informações da etiqueta no console para debug
+        console.log('=== DEBUG ETIQUETA ===');
+        console.log('Código DUN: "{{ dados.codigo_barras }}"');
+        console.log('Código Lote: "{{ dados.codigo_barras_lote }}"');
+        console.log('Tem imagem DUN: {{ "true" if codigo_barras_img else "false" }}');
+        console.log('Tem imagem Lote: {{ "true" if codigo_barras_lote_img else "false" }}');
+        console.log('São iguais: ' + ('{{ dados.codigo_barras }}' === '{{ dados.codigo_barras_lote }}'));
+        
+        // Verificar elementos no DOM
+        const dunImg = document.querySelector('[data-tipo="dun"]');
+        const loteImg = document.querySelector('[data-tipo="lote"]');
+        const dunText = document.querySelector('[data-tipo="dun-text"]');
+        const loteText = document.querySelector('[data-tipo="lote-text"]');
+        
+        console.log('DUN no DOM:', dunImg ? dunImg.dataset.valor : 'não encontrado');
+        console.log('Lote no DOM:', loteImg ? loteImg.dataset.valor : 'não encontrado');
+        console.log('DUN text:', dunText ? dunText.textContent : 'não encontrado');
+        console.log('Lote text:', loteText ? loteText.textContent : 'não encontrado');
+        console.log('======================');
+    </script>
+</body>
+</html>

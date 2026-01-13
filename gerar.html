@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerar Etiqueta</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/navegar/sidebar.css') }}">
+    
+    <style>
+        body {
+            background: #0b0c10;
+            color: #c5c6c7;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+            background: #1a1d21;
+            transition: margin-left 0.3s;
+        }
+
+        .sidebar.compact ~ .content {
+            margin-left: 80px;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            background: rgba(31, 40, 51, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(102, 252, 241, 0.2);
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #66fcf1;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(102, 252, 241, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .form-label {
+            color: #c5c6c7;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            background: rgba(11, 12, 16, 0.8);
+            border: 1px solid rgba(102, 252, 241, 0.3);
+            color: #c5c6c7;
+            border-radius: 8px;
+            padding: 12px 15px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: rgba(11, 12, 16, 0.9);
+            border-color: #66fcf1;
+            box-shadow: 0 0 0 0.2rem rgba(102, 252, 241, 0.25);
+            color: #c5c6c7;
+        }
+
+        .form-control::placeholder {
+            color: #888;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #66fcf1 0%, #45b7b8 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-weight: 600;
+            color: #0b0c10;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #45b7b8 0%, #66fcf1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 252, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(31, 40, 51, 0.8);
+            border: 1px solid rgba(102, 252, 241, 0.3);
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-weight: 600;
+            color: #c5c6c7;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 252, 241, 0.1);
+            border-color: #66fcf1;
+            color: #66fcf1;
+        }
+
+        .preview-card {
+            background: rgba(31, 40, 51, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(102, 252, 241, 0.2);
+            margin-top: 20px;
+        }
+
+        .preview-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #66fcf1;
+            margin-bottom: 15px;
+        }
+
+        .etiqueta-preview {
+            background: white;
+            color: black;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px dashed #ccc;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+
+        .barcode-preview {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .field-info {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .input-group-text {
+            background: rgba(31, 40, 51, 0.8);
+            border: 1px solid rgba(102, 252, 241, 0.3);
+            color: #c5c6c7;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                margin-left: 0;
+                padding: 15px;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'partials/navegar/sidebar.html' %}
+
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <i class="bx bx-plus-circle"></i>
+                Gerar Nova Etiqueta
+            </div>
+            <div class="page-subtitle">
+                Preencha os campos abaixo para criar uma etiqueta personalizada
+            </div>
+        </div>
+
+        <div class="form-container">
+            <form method="POST" id="etiquetaForm">
+                <div class="row">
+                    <!-- Informações do Produto -->
+                    <div class="col-lg-6">
+                        <div class="form-section">
+                            <div class="section-title">
+                                <i class="bx bx-package"></i>
+                                Informações do Produto
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="produto_id" class="form-label">ID do Produto</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="produto_id" name="produto_id" 
+                                           placeholder="123" min="1" 
+                                           value="{{ dados_salvos.get('produto_id', '') }}">
+                                    <button type="button" class="btn btn-outline-secondary" id="buscarProduto">
+                                        <i class="bx bx-search"></i> Buscar
+                                    </button>
+                                </div>
+                                <div class="field-info">Digite o ID do produto e clique em buscar para preencher automaticamente</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição do Item</label>
+                                <textarea class="form-control" id="descricao" name="descricao" rows="5" 
+                                        placeholder="Será preenchido automaticamente" readonly
+                                        >{{ dados_salvos.get('descricao', '') }}</textarea>
+                                <div class="field-info">Preenchido automaticamente com dados do produto cadastrado</div>
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label for="peso" class="form-label">Peso</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="peso" name="peso" 
+                                           placeholder="Será preenchido automaticamente" readonly
+                                           value="{{ dados_salvos.get('peso', '') }}">
+                                    <span class="input-group-text">kg</span>
+                                </div>
+                                <div class="field-info">Preenchido automaticamente com dados do produto cadastrado</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informações de Datas e CNPJ -->
+                    <div class="col-lg-6">
+                        <div class="form-section">
+                            <div class="section-title">
+                                <i class="bx bx-calendar"></i>
+                                Datas e Informações Legais
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="data_fabricacao" class="form-label">Data de Fabricação</label>
+                                <input type="date" class="form-control" id="data_fabricacao" name="data_fabricacao" 
+                                       value="{{ dados_salvos.get('data_fabricacao', '') }}">
+                                <div class="field-info">Data em que o produto foi fabricado</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="cnpj" class="form-label">CNPJ</label>
+                                <input type="text" class="form-control" id="cnpj" name="cnpj" 
+                                       placeholder="Será preenchido automaticamente" readonly
+                                       value="{{ dados_salvos.get('cnpj', '') }}">
+                                <div class="field-info">Preenchido automaticamente com dados do produto cadastrado</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="validade_meses" class="form-label">Validade</label>
+                                <input type="text" class="form-control" id="validade_meses" name="validade_meses" 
+                                       placeholder="Será preenchido automaticamente" readonly
+                                       value="{{ dados_salvos.get('validade_meses', '') }}">
+                                <div class="field-info">Preenchido automaticamente com dados do produto cadastrado</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Códigos de Barras -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="bx bx-barcode"></i>
+                        Códigos de Barras
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="codigo_barras" class="form-label">Código de Barras da DUN</label>
+                                <input type="text" class="form-control" id="codigo_barras" name="codigo_barras" 
+                                       placeholder="Será preenchido automaticamente" readonly
+                                       value="{{ dados_salvos.get('codigo_barras', '') }}">
+                                <div class="field-info">Preenchido automaticamente com dados do produto cadastrado</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="codigo_barras_lote" class="form-label">Código de Barras do Lote</label>
+                                <input type="text" class="form-control" id="codigo_barras_lote" name="codigo_barras_lote" 
+                                       placeholder="Ex: LT001-2024" value="{{ dados_salvos.get('codigo_barras_lote', '') }}">
+                                <div class="field-info">Código de barras específico do lote</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-2" style="background: rgba(23, 162, 184, 0.2); border: 1px solid rgba(23, 162, 184, 0.3); color: #17a2b8;">
+                        <i class="bx bx-info-circle"></i>
+                        <strong>Nota:</strong> Ambos os campos são opcionais. Preencha apenas os códigos de barras que desejar na etiqueta.
+                    </div>
+                </div>
+
+                <!-- Configurações da Etiqueta -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="bx bx-cog"></i>
+                        Configurações da Etiqueta
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="largura" class="form-label">Largura</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="largura" name="largura" 
+                                           value="{{ configuracoes_salvas.get('largura', '100') }}" min="50" max="200" step="5">
+                                    <span class="input-group-text">mm</span>
+                                </div>
+                                <div class="field-info">Largura da etiqueta em milímetros</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="altura" class="form-label">Altura</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="altura" name="altura" 
+                                           value="{{ configuracoes_salvas.get('altura', '75') }}" min="40" max="150" step="5">
+                                    <span class="input-group-text">mm</span>
+                                </div>
+                                <div class="field-info">Altura da etiqueta em milímetros</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="tamanho_fonte" class="form-label">Tamanho da Fonte</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="tamanho_fonte" name="tamanho_fonte" 
+                                           value="{{ configuracoes_salvas.get('tamanho_fonte', '8') }}" min="6" max="16" step="1">
+                                    <span class="input-group-text">pt</span>
+                                </div>
+                                <div class="field-info">Tamanho da fonte do texto em pontos</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-info" style="background: rgba(23, 162, 184, 0.2); border: 1px solid rgba(23, 162, 184, 0.3); color: #17a2b8;">
+                                <i class="bx bx-info-circle"></i>
+                                <strong>Tamanhos sugeridos:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li><strong>Pequena:</strong> 75x50mm - Para produtos pequenos</li>
+                                    <li><strong>Média:</strong> 100x75mm - Padrão geral (recomendado)</li>
+                                    <li><strong>Grande:</strong> 150x100mm - Para produtos grandes</li>
+                                    <li><strong>Adesivo Padrão:</strong> 70x50mm - Etiquetas adesivas comuns</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões -->
+                <div class="text-end">
+                    <a href="/etiqueta/home" class="btn btn-secondary me-2">
+                        <i class="bx bx-arrow-back"></i>
+                        Voltar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bx bx-printer"></i>
+                        Gerar Etiqueta
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='JS/navegar/sidebar.js') }}"></script>
+    
+    <script>
+        // Máscara para CNPJ
+        document.getElementById('cnpj').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/^(\d{2})(\d)/, '$1.$2');
+            value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+            value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
+            value = value.replace(/(\d{4})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+
+        // Validação simples do formulário
+        document.getElementById('etiquetaForm').addEventListener('submit', function(e) {
+            const produtoId = document.getElementById('produto_id').value.trim();
+            
+            if (!produtoId) {
+                e.preventDefault();
+                alert('Digite o ID do produto e clique em buscar primeiro.');
+                document.getElementById('produto_id').focus();
+                return false;
+            }
+        });
+
+        // Preview em tempo real (opcional)
+        function updatePreview() {
+            // Esta função pode ser expandida para mostrar uma preview em tempo real
+            console.log('Preview atualizado');
+        }
+
+        // Buscar produto por ID
+        document.getElementById('buscarProduto').addEventListener('click', function() {
+            const produtoId = document.getElementById('produto_id').value;
+            
+            if (!produtoId) {
+                alert('Digite um ID do produto para buscar.');
+                document.getElementById('produto_id').focus();
+                return;
+            }
+            
+            // Mostrar loading
+            this.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Buscando...';
+            this.disabled = true;
+            
+            // Fazer requisição para buscar dados do produto
+            fetch(`/etiqueta/api/produto/${produtoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Preencher campos automaticamente
+                        document.getElementById('descricao').value = data.produto.descricao || '';
+                        document.getElementById('peso').value = data.produto.peso || '';
+                        document.getElementById('cnpj').value = data.produto.cnpj || '';
+                        
+                        // Preencher código de barras do produto se existir
+                        if (data.produto.dun) {
+                            document.getElementById('codigo_barras').value = data.produto.dun;
+                        }
+                        
+                        // Preencher validade em meses se existir
+                        if (data.produto.validade) {
+                            document.getElementById('validade_meses').value = data.produto.validade;
+                        }
+                    } else {
+                        alert(data.message || 'Produto não encontrado.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao buscar produto. Tente novamente.');
+                })
+                .finally(() => {
+                    // Restaurar botão
+                    this.innerHTML = '<i class="bx bx-search"></i> Buscar';
+                    this.disabled = false;
+                });
+        });
+
+        // Adicionar listeners para atualizar preview
+        document.querySelectorAll('input, textarea').forEach(field => {
+            field.addEventListener('input', updatePreview);
+        });
+    </script>
+</body>
+</html>

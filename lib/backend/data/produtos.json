@@ -1,0 +1,25 @@
+{
+  "produtos": [
+    {
+      "id": 1,
+      "numero": 1001,
+      "descricao": "PRODUTO EXEMPLO 1",
+      "peso": "500g",
+      "validade_meses": 12,
+      "cnpj": "12.345.678/0001-90",
+      "dun": "7891234567890",
+      "dt_criacao": "2025-01-13"
+    },
+    {
+      "id": 2,
+      "numero": 1002,
+      "descricao": "PRODUTO EXEMPLO 2",
+      "peso": "1kg",
+      "validade_meses": 6,
+      "cnpj": "12.345.678/0001-90",
+      "dun": "7891234567891",
+      "dt_criacao": "2025-01-13"
+    }
+  ],
+  "ultimo_id": 2
+}

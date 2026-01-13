@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Etiquetas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar-custom {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .navbar-brand {
+            color: #667eea !important;
+            font-weight: 700;
+        }
+
+        .nav-link {
+            color: #555 !important;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #667eea !important;
+        }
+
+        .content {
+            padding: 30px;
+            min-height: calc(100vh - 60px);
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .feature-description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('etiqueta.home') }}">
+                <i class="bx bx-barcode"></i> Sistema de Etiquetas
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('etiqueta.home') }}">
+                            <i class="bx bx-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('etiqueta.gerar_etiqueta') }}">
+                            <i class="bx bx-plus-circle"></i> Gerar Etiqueta
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('etiqueta.listar_produtos_view') }}">
+                            <i class="bx bx-package"></i> Produtos
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <i class="bx bx-barcode"></i> Sistema de Etiquetas
+            </div>
+            <p>Gere e imprima etiquetas personalizadas para seus produtos</p>
+        </div>
+
+        <div class="card-container">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bx bx-printer"></i>
+                </div>
+                <div class="feature-title">Gerar Etiqueta</div>
+                <div class="feature-description">
+                    Crie etiquetas com codigo de barras e informacoes do produto
+                </div>
+                <a href="{{ url_for('etiqueta.gerar_etiqueta') }}" class="btn btn-primary">
+                    <i class="bx bx-plus"></i> Gerar
+                </a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bx bx-package"></i>
+                </div>
+                <div class="feature-title">Produtos</div>
+                <div class="feature-description">
+                    Gerencie os produtos cadastrados para geracao de etiquetas
+                </div>
+                <a href="{{ url_for('etiqueta.listar_produtos_view') }}" class="btn btn-outline-primary">
+                    <i class="bx bx-list-ul"></i> Ver Produtos
+                </a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bx bx-add-to-queue"></i>
+                </div>
+                <div class="feature-title">Novo Produto</div>
+                <div class="feature-description">
+                    Cadastre novos produtos com descricao, peso e codigo DUN
+                </div>
+                <a href="{{ url_for('etiqueta.novo_produto') }}" class="btn btn-outline-primary">
+                    <i class="bx bx-plus"></i> Cadastrar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
