@@ -206,7 +206,7 @@
                             <label for="codigo_barras_lote" class="form-label">Codigo de Barras do Lote</label>
                             <input type="text" class="form-control" id="codigo_barras_lote" name="codigo_barras_lote"
                                    placeholder="Ex: LT001-2024"
-                                   value="{{ dados_salvos.get('codigo_barras_lote', '') if dados_salvos else '' }}">
+                                   value="">
                         </div>
                     </div>
                 </div>
@@ -307,6 +307,19 @@
             if (e.key === 'Enter') {
                 e.preventDefault();
                 document.getElementById('buscarProduto').click();
+            }
+        });
+
+        // Busca automatica ao digitar
+        let timeoutBusca;
+        document.getElementById('produto_id').addEventListener('input', function() {
+            clearTimeout(timeoutBusca);
+            const produtoId = this.value.trim();
+
+            if (produtoId && produtoId.length > 0) {
+                timeoutBusca = setTimeout(function() {
+                    document.getElementById('buscarProduto').click();
+                }, 500);
             }
         });
     </script>
