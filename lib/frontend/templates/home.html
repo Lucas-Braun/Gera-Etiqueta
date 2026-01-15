@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lempay - Sistema de Etiquetas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container-main {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .logo-section {
+            margin-bottom: 50px;
+        }
+
+        .logo-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .logo-section p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            margin-top: 10px;
+        }
+
+        .modules-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 50px;
+            width: 280px;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .module-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            color: #333;
+        }
+
+        .module-card i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .module-card.industria i {
+            color: #667eea;
+        }
+
+        .module-card.recebimento i {
+            color: #28a745;
+        }
+
+        .module-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .module-card p {
+            font-size: 0.95rem;
+            color: #666;
+            margin: 0;
+        }
+
+        .module-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .module-card .badge-soon {
+            background: #ffc107;
+            color: #333;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 15px;
+            display: inline-block;
+        }
+
+        .footer {
+            margin-top: 50px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-main">
+        <div class="logo-section">
+            <h1><i class="bx bx-barcode"></i> Sistema de Etiquetas</h1>
+            <p>Selecione o modulo desejado</p>
+        </div>
+
+        <div class="modules-container">
+            <a href="{{ url_for('etiqueta.home') }}" class="module-card industria">
+                <i class="bx bx-factory"></i>
+                <h3>Industria</h3>
+                <p>Etiquetas para producao e expedicao de produtos</p>
+            </a>
+
+            <a href="#" class="module-card recebimento disabled">
+                <i class="bx bx-package"></i>
+                <h3>Recebimento</h3>
+                <p>Etiquetas para recebimento de materiais</p>
+                <span class="badge-soon">Em breve</span>
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2026 - Todos os direitos reservados</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

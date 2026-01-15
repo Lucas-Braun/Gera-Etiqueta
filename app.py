@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, render_template
 import os
 
 # Criar aplicacao Flask
@@ -14,10 +14,11 @@ from lib.backend.routes.etiqueta import etiqueta_bp
 app.register_blueprint(etiqueta_bp)
 
 
-# Rota raiz redireciona para home
+# Pagina principal - escolha de modulos
 @app.route('/')
-def index():
-    return redirect(url_for('etiqueta.home'))
+@app.route('/home')
+def home():
+    return render_template('home.html')
 
 
 if __name__ == '__main__':

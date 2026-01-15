@@ -10,10 +10,11 @@
 <body>
     <nav class="navbar">
         <div class="nav-brand">
-            <a href="{{ url_for('etiqueta.home') }}">Sistema de Etiquetas</a>
+            <a href="{{ url_for('home') }}">Sistema de Etiquetas</a>
         </div>
         <ul class="nav-menu">
-            <li><a href="{{ url_for('etiqueta.home') }}">Home</a></li>
+            <li><a href="{{ url_for('home') }}">Modulos</a></li>
+            <li><a href="{{ url_for('etiqueta.home') }}">Industria</a></li>
             <li><a href="{{ url_for('etiqueta.gerar_etiqueta') }}">Gerar Etiqueta</a></li>
             <li><a href="{{ url_for('etiqueta.listar_produtos_view') }}">Produtos</a></li>
         </ul>
