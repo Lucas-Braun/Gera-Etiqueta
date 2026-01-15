@@ -310,7 +310,7 @@
             }
         });
 
-        // Busca automatica ao digitar
+        // Busca automatica ao digitar (espera 1.5s apos parar de digitar)
         let timeoutBusca;
         document.getElementById('produto_id').addEventListener('input', function() {
             clearTimeout(timeoutBusca);
@@ -319,7 +319,7 @@
             if (produtoId && produtoId.length > 0) {
                 timeoutBusca = setTimeout(function() {
                     document.getElementById('buscarProduto').click();
-                }, 500);
+                }, 1500);
             }
         });
     </script>
