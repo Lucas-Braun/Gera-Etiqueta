@@ -132,11 +132,7 @@
                     <input type="number" class="form-control" id="numero" name="numero"
                            value="{{ produto.numero if produto else '' }}"
                            placeholder="ID unico do produto"
-                           {% if produto %}readonly{% endif %}
                            required>
-                    {% if produto %}
-                    <small class="form-hint">O numero nao pode ser alterado</small>
-                    {% endif %}
                 </div>
 
                 <div class="mb-3">
@@ -144,11 +140,7 @@
                     <input type="text" class="form-control" id="descricao" name="descricao"
                            value="{{ produto.descricao if produto else '' }}"
                            placeholder="Descricao do produto"
-                           {% if produto %}readonly{% endif %}
                            required>
-                    {% if produto %}
-                    <small class="form-hint">A descricao nao pode ser alterada</small>
-                    {% endif %}
                 </div>
 
                 <div class="mb-3">
@@ -176,11 +168,7 @@
                     <label for="dun" class="form-label">Codigo DUN</label>
                     <input type="text" class="form-control" id="dun" name="dun"
                            value="{{ produto.dun if produto else '' }}"
-                           placeholder="Codigo de barras"
-                           {% if produto %}readonly{% endif %}>
-                    {% if produto %}
-                    <small class="form-hint">O codigo DUN nao pode ser alterado</small>
-                    {% endif %}
+                           placeholder="Codigo de barras">
                 </div>
 
                 <div class="d-flex gap-2 justify-content-end mt-4">

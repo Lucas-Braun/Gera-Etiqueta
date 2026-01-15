@@ -73,18 +73,24 @@ def criar_produto(descricao, numero, peso, validade_meses, cnpj, dun):
     return novo_produto, None
 
 
-def atualizar_produto(produto_id, peso=None, validade_meses=None, cnpj=None):
+def atualizar_produto(produto_id, numero=None, descricao=None, peso=None, validade_meses=None, cnpj=None, dun=None):
     """Atualiza um produto existente"""
     dados = carregar_dados()
 
     for i, produto in enumerate(dados.get('produtos', [])):
         if produto['id'] == produto_id:
+            if numero is not None:
+                dados['produtos'][i]['numero'] = numero
+            if descricao is not None:
+                dados['produtos'][i]['descricao'] = descricao.upper()
             if peso is not None:
                 dados['produtos'][i]['peso'] = peso
             if validade_meses is not None:
                 dados['produtos'][i]['validade_meses'] = validade_meses
             if cnpj is not None:
                 dados['produtos'][i]['cnpj'] = cnpj
+            if dun is not None:
+                dados['produtos'][i]['dun'] = dun
             dados['produtos'][i]['dt_atualizacao'] = datetime.now().strftime('%Y-%m-%d')
 
             salvar_dados(dados)

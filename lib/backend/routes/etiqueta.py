@@ -169,13 +169,16 @@ def editar_produto(produto_id):
     """Edita produto existente"""
     if request.method == 'POST':
         try:
+            numero = int(request.form.get('numero', 0))
+            descricao = request.form.get('descricao', '').strip()
             peso = request.form.get('peso', '').strip()
             validade_meses = request.form.get('validade_meses', '')
             cnpj = request.form.get('cnpj', '').strip()
+            dun = request.form.get('dun', '').strip()
 
             validade = int(validade_meses) if validade_meses else None
 
-            produto, erro = atualizar_produto(produto_id, peso, validade, cnpj)
+            produto, erro = atualizar_produto(produto_id, numero, descricao, peso, validade, cnpj, dun)
 
             if erro:
                 flash(erro, 'error')
