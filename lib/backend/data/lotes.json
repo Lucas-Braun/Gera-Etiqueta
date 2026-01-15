@@ -1,0 +1,16 @@
+{
+  "lotes": [
+    {
+      "id": 1,
+      "numero_lote": "TESTE-123",
+      "data_recebimento": "2026-01-15",
+      "data_fabricacao": "2026-01-15",
+      "data_validade": "2026-01-15",
+      "quantidade": 110.0,
+      "numero_nota_fiscal": "12345",
+      "observacao": null,
+      "dt_cadastro": "2026-01-15 13:20:07"
+    }
+  ],
+  "ultimo_id": 1
+}

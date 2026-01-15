@@ -1,25 +1,37 @@
 {
   "produtos": [
     {
-      "id": 1,
-      "numero": 1001,
-      "descricao": "PRODUTO EXEMPLO 1",
-      "peso": "500g",
-      "validade_meses": 12,
-      "cnpj": "12.345.678/0001-90",
-      "dun": "7891234567890",
-      "dt_criacao": "2025-01-13"
+      "id": 3,
+      "numero": 846,
+      "descricao": "CX AMACIANTE DE ROUPAS CONCENTRADO CHA BRANCO COALA LAUNDRY 12X1 LT",
+      "peso": "12.778",
+      "validade_meses": 24,
+      "cnpj": "60.881.229/0004-05",
+      "dun": "17897744506048",
+      "dt_criacao": "2026-01-13",
+      "dt_atualizacao": "2026-01-13"
     },
     {
-      "id": 2,
-      "numero": 1002,
-      "descricao": "PRODUTO EXEMPLO 2",
-      "peso": "1kg",
-      "validade_meses": 6,
-      "cnpj": "12.345.678/0001-90",
-      "dun": "7891234567891",
-      "dt_criacao": "2025-01-13"
+      "id": 5,
+      "numero": 847,
+      "descricao": "CX AMACIANTE DE ROUPAS CONCENTRADO ORQUIDEA NEGRA  COALA LAUNDRY 12X1 LT",
+      "peso": "12.778",
+      "validade_meses": 24,
+      "cnpj": "60.881.229/0004-05",
+      "dun": "17897744506055",
+      "dt_criacao": "2026-01-13",
+      "dt_atualizacao": "2026-01-14"
+    },
+    {
+      "id": 7,
+      "numero": 585,
+      "descricao": "ACIDO EMERSON 12X1",
+      "peso": "13,2",
+      "validade_meses": 24,
+      "cnpj": "60.881.229/0004-05",
+      "dun": "20719",
+      "dt_criacao": "2026-01-14"
     }
   ],
-  "ultimo_id": 2
+  "ultimo_id": 7
 }

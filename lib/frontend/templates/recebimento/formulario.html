@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Lote - Recebimento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar-custom {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .navbar-brand {
+            color: #28a745 !important;
+            font-weight: 700;
+        }
+
+        .nav-link {
+            color: #555 !important;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #28a745 !important;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            color: white;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: #28a745;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #28a745;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+        }
+
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .table thead th {
+            background: #28a745;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e8f5e9;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            display: none;
+            z-index: 1001;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .notification.success { background: #28a745; }
+        .notification.error { background: #dc3545; }
+        .notification.show { display: block; animation: fadeIn 0.3s; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .campo-obrigatorio {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .btn-acoes {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('recebimento.home') }}">
+                <i class="bx bx-package"></i> Recebimento
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">
+                            <i class="bx bx-grid-alt"></i> Modulos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('recebimento.home') }}">
+                            <i class="bx bx-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('recebimento.formulario_lote') }}">
+                            <i class="bx bx-plus-circle"></i> Formulario de Lote
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <i class="bx bx-clipboard"></i> Formulario de Lote
+            </div>
+            <p class="mb-0">Controle de recebimento de lotes</p>
+        </div>
+
+        <div class="row">
+            <!-- Formulario -->
+            <div class="col-lg-5">
+                <div class="form-card">
+                    <h5 class="section-title" id="tituloFormulario">
+                        <i class="bx bx-plus-circle"></i> Cadastrar Novo Lote
+                    </h5>
+
+                    <form id="formLote">
+                        <input type="hidden" id="loteIdEdicao" value="">
+
+                        <div class="mb-3">
+                            <label for="numeroLote" class="form-label">
+                                Numero do Lote <span class="campo-obrigatorio">*</span>
+                            </label>
+                            <input type="text" class="form-control" id="numeroLote"
+                                   placeholder="Ex: LOTE001-2025" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="dataRecebimento" class="form-label">
+                                Data do Recebimento <span class="campo-obrigatorio">*</span>
+                            </label>
+                            <input type="date" class="form-control" id="dataRecebimento" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="dataFabricacao" class="form-label">Data de Fabricacao</label>
+                                    <input type="date" class="form-control" id="dataFabricacao">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="dataValidade" class="form-label">Data de Validade</label>
+                                    <input type="date" class="form-control" id="dataValidade">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="quantidade" class="form-label">Quantidade</label>
+                            <input type="number" step="0.001" class="form-control" id="quantidade"
+                                   placeholder="Ex: 100.500">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="numeroNotaFiscal" class="form-label">Numero da Nota Fiscal</label>
+                            <input type="text" class="form-control" id="numeroNotaFiscal"
+                                   placeholder="Ex: NF001234">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="observacao" class="form-label">Observacao</label>
+                            <textarea class="form-control" id="observacao" rows="3"
+                                      placeholder="Observacoes sobre o lote"></textarea>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button type="submit" class="btn btn-primary" id="btnSalvar">
+                                <i class="bx bx-save"></i> <span id="textoSalvar">Salvar</span>
+                            </button>
+                            <button type="button" class="btn btn-warning" onclick="abrirModalEtiqueta()">
+                                <i class="bx bx-barcode"></i> Gerar Etiqueta
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="limparFormulario()">
+                                <i class="bx bx-eraser"></i> Limpar
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" id="btnCancelar"
+                                    onclick="cancelarEdicao()" style="display: none;">
+                                <i class="bx bx-x"></i> Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tabela -->
+            <div class="col-lg-7">
+                <div class="form-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="section-title mb-0">
+                            <i class="bx bx-list-ul"></i> Lotes Cadastrados
+                        </h5>
+                        <button class="btn btn-sm btn-outline-primary" onclick="consultarLotes()">
+                            <i class="bx bx-refresh"></i> Atualizar
+                        </button>
+                    </div>
+
+                    <div class="alert alert-info py-2">
+                        <strong>Total:</strong> <span id="totalRegistros">0</span> lotes
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Lote</th>
+                                    <th>Recebimento</th>
+                                    <th>Validade</th>
+                                    <th>NF</th>
+                                    <th>Acoes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaLotes">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Etiqueta -->
+    <div class="modal fade" id="modalEtiqueta" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bx bx-barcode"></i> Configurar Etiqueta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label">Largura (mm)</label>
+                                <input type="number" class="form-control" id="larguraEtiqueta" value="100">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label">Altura (mm)</label>
+                                <input type="number" class="form-control" id="alturaEtiqueta" value="75">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tamanho da Fonte (pt)</label>
+                        <input type="number" class="form-control" id="tamanhoFonte" value="8">
+                    </div>
+                    <div class="alert alert-secondary" id="previewEtiqueta">
+                        Preencha o formulario para visualizar
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="gerarEtiqueta()">
+                        <i class="bx bx-download"></i> Gerar PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="text-center">
+            <div class="spinner-border text-success mb-2"></div>
+            <p>Processando...</p>
+        </div>
+    </div>
+
+    <!-- Notificacao -->
+    <div class="notification" id="notification">
+        <span id="notificationMessage"></span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function mostrarLoading() {
+            document.getElementById('loading').style.display = 'flex';
+        }
+
+        function esconderLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function mostrarNotificacao(mensagem, tipo = 'success') {
+            const notification = document.getElementById('notification');
+            const message = document.getElementById('notificationMessage');
+            message.textContent = mensagem;
+            notification.className = 'notification ' + tipo + ' show';
+            setTimeout(() => notification.classList.remove('show'), 4000);
+        }
+
+        function formatarDataExibicao(data) {
+            if (!data) return '';
+            const partes = data.split('-');
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+
+        function formatarDataApi(data) {
+            if (!data) return '';
+            const partes = data.split('-');
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+
+        function limparFormulario() {
+            document.getElementById('formLote').reset();
+            document.getElementById('loteIdEdicao').value = '';
+            document.getElementById('tituloFormulario').innerHTML = '<i class="bx bx-plus-circle"></i> Cadastrar Novo Lote';
+            document.getElementById('textoSalvar').textContent = 'Salvar';
+            document.getElementById('btnCancelar').style.display = 'none';
+
+            // Data atual
+            document.getElementById('dataRecebimento').value = new Date().toISOString().split('T')[0];
+            document.getElementById('numeroLote').focus();
+        }
+
+        function consultarLotes() {
+            mostrarLoading();
+
+            fetch('/recebimento/api/lotes')
+                .then(response => response.json())
+                .then(result => {
+                    if (result.error) {
+                        mostrarNotificacao(result.error, 'error');
+                        return;
+                    }
+
+                    document.getElementById('totalRegistros').textContent = result.total_registros;
+
+                    const tbody = document.getElementById('tabelaLotes');
+                    tbody.innerHTML = '';
+
+                    if (result.dados.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" class="text-center">Nenhum lote cadastrado</td></tr>';
+                        return;
+                    }
+
+                    result.dados.forEach(lote => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td title="${lote.numero_lote}">${lote.numero_lote}</td>
+                            <td>${formatarDataExibicao(lote.data_recebimento)}</td>
+                            <td>${formatarDataExibicao(lote.data_validade) || '-'}</td>
+                            <td>${lote.numero_nota_fiscal || '-'}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary btn-acoes" onclick="editarLote(${lote.id})" title="Editar">
+                                    <i class="bx bx-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-warning btn-acoes" onclick="gerarEtiquetaLote(${lote.id})" title="Etiqueta">
+                                    <i class="bx bx-barcode"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger btn-acoes" onclick="deletarLote(${lote.id})" title="Excluir">
+                                    <i class="bx bx-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                })
+                .catch(error => {
+                    mostrarNotificacao('Erro ao carregar lotes: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    esconderLoading();
+                });
+        }
+
+        document.getElementById('formLote').addEventListener('submit', function(e) {
+            e.preventDefault();
+            mostrarLoading();
+
+            const loteIdEdicao = document.getElementById('loteIdEdicao').value;
+            const dados = {
+                numero_lote: document.getElementById('numeroLote').value.trim(),
+                data_recebimento: document.getElementById('dataRecebimento').value,
+                data_fabricacao: document.getElementById('dataFabricacao').value,
+                data_validade: document.getElementById('dataValidade').value,
+                quantidade: document.getElementById('quantidade').value,
+                numero_nota_fiscal: document.getElementById('numeroNotaFiscal').value.trim(),
+                observacao: document.getElementById('observacao').value.trim()
+            };
+
+            let url, method;
+            if (loteIdEdicao) {
+                url = `/recebimento/api/lotes/${loteIdEdicao}`;
+                method = 'PUT';
+            } else {
+                url = '/recebimento/api/lotes';
+                method = 'POST';
+            }
+
+            fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    mostrarNotificacao(result.message, 'success');
+                    limparFormulario();
+                    consultarLotes();
+                } else {
+                    mostrarNotificacao(result.error || 'Erro ao salvar', 'error');
+                }
+            })
+            .catch(error => {
+                mostrarNotificacao('Erro: ' + error.message, 'error');
+            })
+            .finally(() => {
+                esconderLoading();
+            });
+        });
+
+        function editarLote(loteId) {
+            mostrarLoading();
+
+            fetch(`/recebimento/api/lotes/${loteId}`)
+                .then(response => response.json())
+                .then(lote => {
+                    if (lote.error) {
+                        mostrarNotificacao(lote.error, 'error');
+                        return;
+                    }
+
+                    document.getElementById('loteIdEdicao').value = lote.id;
+                    document.getElementById('numeroLote').value = lote.numero_lote;
+                    document.getElementById('dataRecebimento').value = lote.data_recebimento;
+                    document.getElementById('dataFabricacao').value = lote.data_fabricacao || '';
+                    document.getElementById('dataValidade').value = lote.data_validade || '';
+                    document.getElementById('quantidade').value = lote.quantidade || '';
+                    document.getElementById('numeroNotaFiscal').value = lote.numero_nota_fiscal || '';
+                    document.getElementById('observacao').value = lote.observacao || '';
+
+                    document.getElementById('tituloFormulario').innerHTML = '<i class="bx bx-edit"></i> Editar Lote';
+                    document.getElementById('textoSalvar').textContent = 'Atualizar';
+                    document.getElementById('btnCancelar').style.display = 'inline-block';
+
+                    document.getElementById('numeroLote').focus();
+                    mostrarNotificacao('Lote carregado para edicao', 'success');
+                })
+                .catch(error => {
+                    mostrarNotificacao('Erro: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    esconderLoading();
+                });
+        }
+
+        function deletarLote(loteId) {
+            if (!confirm('Deseja realmente excluir este lote?')) return;
+
+            mostrarLoading();
+
+            fetch(`/recebimento/api/lotes/${loteId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        mostrarNotificacao(result.message, 'success');
+                        consultarLotes();
+                    } else {
+                        mostrarNotificacao(result.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    mostrarNotificacao('Erro: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    esconderLoading();
+                });
+        }
+
+        function cancelarEdicao() {
+            limparFormulario();
+            mostrarNotificacao('Edicao cancelada', 'success');
+        }
+
+        function abrirModalEtiqueta() {
+            atualizarPreviewEtiqueta();
+            const modal = new bootstrap.Modal(document.getElementById('modalEtiqueta'));
+            modal.show();
+        }
+
+        function atualizarPreviewEtiqueta() {
+            const numeroLote = document.getElementById('numeroLote').value || 'Nao informado';
+            const dataRecebimento = document.getElementById('dataRecebimento').value;
+            const dataValidade = document.getElementById('dataValidade').value;
+            const notaFiscal = document.getElementById('numeroNotaFiscal').value;
+
+            let preview = `<strong>Lote:</strong> ${numeroLote}<br>`;
+            preview += `<strong>Recebimento:</strong> ${formatarDataExibicao(dataRecebimento) || 'Nao informado'}<br>`;
+            if (dataValidade) preview += `<strong>Validade:</strong> ${formatarDataExibicao(dataValidade)}<br>`;
+            if (notaFiscal) preview += `<strong>NF:</strong> ${notaFiscal}`;
+
+            document.getElementById('previewEtiqueta').innerHTML = preview;
+        }
+
+        function gerarEtiqueta() {
+            const numeroLote = document.getElementById('numeroLote').value;
+
+            if (!numeroLote) {
+                mostrarNotificacao('Preencha o numero do lote', 'error');
+                return;
+            }
+
+            mostrarLoading();
+
+            const dadosEtiqueta = {
+                numero_lote: numeroLote,
+                data_recebimento: formatarDataApi(document.getElementById('dataRecebimento').value),
+                data_fabricacao: formatarDataApi(document.getElementById('dataFabricacao').value),
+                data_validade: formatarDataApi(document.getElementById('dataValidade').value),
+                quantidade: document.getElementById('quantidade').value,
+                observacao: document.getElementById('observacao').value,
+                numero_nota_fiscal: document.getElementById('numeroNotaFiscal').value,
+                largura: document.getElementById('larguraEtiqueta').value || 100,
+                altura: document.getElementById('alturaEtiqueta').value || 75,
+                tamanho_fonte: document.getElementById('tamanhoFonte').value || 8
+            };
+
+            fetch('/recebimento/api/gerar-etiqueta', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosEtiqueta)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro ao gerar etiqueta');
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `etiqueta_${numeroLote}_${new Date().toISOString().split('T')[0]}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+
+                bootstrap.Modal.getInstance(document.getElementById('modalEtiqueta')).hide();
+                mostrarNotificacao('Etiqueta gerada com sucesso!', 'success');
+            })
+            .catch(error => {
+                mostrarNotificacao('Erro: ' + error.message, 'error');
+            })
+            .finally(() => {
+                esconderLoading();
+            });
+        }
+
+        function gerarEtiquetaLote(loteId) {
+            mostrarLoading();
+
+            fetch(`/recebimento/api/lotes/${loteId}`)
+                .then(response => response.json())
+                .then(lote => {
+                    if (lote.error) {
+                        mostrarNotificacao(lote.error, 'error');
+                        return;
+                    }
+
+                    document.getElementById('numeroLote').value = lote.numero_lote;
+                    document.getElementById('dataRecebimento').value = lote.data_recebimento;
+                    document.getElementById('dataFabricacao').value = lote.data_fabricacao || '';
+                    document.getElementById('dataValidade').value = lote.data_validade || '';
+                    document.getElementById('quantidade').value = lote.quantidade || '';
+                    document.getElementById('numeroNotaFiscal').value = lote.numero_nota_fiscal || '';
+                    document.getElementById('observacao').value = lote.observacao || '';
+
+                    esconderLoading();
+                    abrirModalEtiqueta();
+                })
+                .catch(error => {
+                    esconderLoading();
+                    mostrarNotificacao('Erro: ' + error.message, 'error');
+                });
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('dataRecebimento').value = new Date().toISOString().split('T')[0];
+            consultarLotes();
+            document.getElementById('numeroLote').focus();
+
+            // Atualizar preview
+            ['numeroLote', 'dataRecebimento', 'dataValidade', 'numeroNotaFiscal'].forEach(id => {
+                document.getElementById(id).addEventListener('input', atualizarPreviewEtiqueta);
+            });
+        });
+    </script>
+</body>
+</html>

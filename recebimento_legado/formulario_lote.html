@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Lote/Laudo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #4285f4;
+            --accent-color: #7bb3ff;
+            --background-color: #f8f9fa;
+            --header-bg: #003d7a;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .dashboard-header {
+            background: var(--header-bg);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .consulta-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 12px;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+        }
+
+        .btn-salvar {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-salvar:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-consultar {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-consultar:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-limpar {
+            background-color: var(--warning-color);
+            color: #212529;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-limpar:hover {
+            background-color: #e0a800;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .table {
+            font-size: 12px;
+        }
+
+        .table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 8px;
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e3f2fd;
+        }
+
+        .table td {
+            padding: 8px;
+            vertical-align: middle;
+        }
+
+        .alert {
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .campo-obrigatorio {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+
+        .form-section {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 20px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            display: none;
+            z-index: 1001;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .notification.success {
+            background-color: var(--success-color);
+        }
+
+        .notification.error {
+            background-color: var(--danger-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .notification.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .btn-etiqueta {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .btn-etiqueta:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h2 class="text-center mb-0">
+                <i class="fas fa-clipboard-list me-2"></i>
+                Formulário de Lote/Laudo
+            </h2>
+            <p class="text-center mb-0 mt-2">Controle de recebimento de lotes e laudos de produtos</p>
+        </div>
+
+        <div class="row">
+            <!-- Formulário -->
+            <div class="col-lg-6">
+                <div class="form-card">
+                    <div class="form-section">
+                        <h4 class="section-title" id="tituloFormulario">
+                            <i class="fas fa-plus-circle me-2" id="iconeFormulario"></i>
+                            <span id="textoTitulo">Cadastrar Novo Lote</span>
+                        </h4>
+
+                        <form id="formLote">
+                            <!-- Campo oculto para ID do lote (usado na edição) -->
+                            <input type="hidden" id="loteIdEdicao" value="">
+                            
+                            <div class="mb-3">
+                                <label for="numeroLote" class="form-label">
+                                    Número do Lote <span class="campo-obrigatorio">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="numeroLote" 
+                                       placeholder="Ex: LOTE001-2025" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="dataRecebimento" class="form-label">
+                                    Data do Recebimento <span class="campo-obrigatorio">*</span>
+                                </label>
+                                <input type="date" class="form-control" id="dataRecebimento" required>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="dataFabricacao" class="form-label">
+                                            Data de Fabricação
+                                        </label>
+                                        <input type="date" class="form-control" id="dataFabricacao">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="dataValidade" class="form-label">
+                                            Data de Validade
+                                        </label>
+                                        <input type="date" class="form-control" id="dataValidade">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="quantidade" class="form-label">
+                                    Quantidade
+                                </label>
+                                <input type="number" step="0.001" class="form-control" id="quantidade" 
+                                       placeholder="Ex: 100.500">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="numeroNotaFiscal" class="form-label">
+                                    Número da Nota Fiscal
+                                </label>
+                                <input type="text" class="form-control" id="numeroNotaFiscal" 
+                                       placeholder="Ex: NF001234">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="observacao" class="form-label">
+                                    Observação (opcional)
+                                </label>
+                                <textarea class="form-control" id="observacao" rows="4" 
+                                          placeholder="Digite observações sobre o lote, condições de recebimento, etc."></textarea>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-salvar me-2" id="btnSalvar">
+                                    <i class="fas fa-save me-2" id="iconeSalvar"></i>
+                                    <span id="textoSalvar">Salvar Lote</span>
+                                </button>
+                                <button type="button" class="btn btn-warning me-2" onclick="abrirModalEtiqueta()">
+                                    <i class="fas fa-tag me-2"></i>
+                                    Gerar Etiqueta
+                                </button>
+                                <button type="button" class="btn btn-limpar" onclick="limparFormulario()">
+                                    <i class="fas fa-eraser me-2"></i>
+                                    Limpar
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="btnCancelarEdicao" onclick="cancelarEdicao()" style="display: none;">
+                                    <i class="fas fa-times me-2"></i>
+                                    Cancelar Edição
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consulta -->
+            <div class="col-lg-6">
+                <div class="consulta-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="section-title mb-0">
+                            <i class="fas fa-search me-2"></i>
+                            Lotes Cadastrados
+                        </h4>
+                        <button class="btn btn-consultar" onclick="consultarLotes()">
+                            <i class="fas fa-sync-alt me-2"></i>
+                            Atualizar
+                        </button>
+                    </div>
+
+                    <div id="infoLotes" class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Total de Registros:</strong> <span id="totalRegistros">0</span>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Lote</th>
+                                    <th>Data Receb.</th>
+                                    <th>Data Fabric.</th>
+                                    <th>Data Valid.</th>
+                                    <th>Qtd.</th>
+                                    <th>Nota Fiscal</th>
+                                    <th>Observação</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaLotes">
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="loading-content">
+            <div class="spinner-border text-primary mb-2" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="mb-0">Processando...</p>
+        </div>
+    </div>
+
+    <!-- Modal Configuração de Etiqueta -->
+    <div class="modal fade" id="modalEtiqueta" tabindex="-1" aria-labelledby="modalEtiquetaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEtiquetaLabel">
+                        <i class="fas fa-tag me-2"></i>
+                        Configurações da Etiqueta
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEtiqueta">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="larguraEtiqueta" class="form-label">Largura</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="larguraEtiqueta" value="100" min="10" max="500">
+                                        <span class="input-group-text">mm</span>
+                                    </div>
+                                    <small class="form-text text-muted">Largura da etiqueta em milímetros</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="alturaEtiqueta" class="form-label">Altura</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="alturaEtiqueta" value="75" min="10" max="500">
+                                        <span class="input-group-text">mm</span>
+                                    </div>
+                                    <small class="form-text text-muted">Altura da etiqueta em milímetros</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="tamanhoFonte" class="form-label">Tamanho da Fonte</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="tamanhoFonte" value="8" min="6" max="20">
+                                <span class="input-group-text">pt</span>
+                            </div>
+                            <small class="form-text text-muted">Tamanho da fonte do texto em pontos</small>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Dados da Etiqueta:</strong><br>
+                            <span id="dadosEtiquetaPreview">Preencha o formulário acima para gerar a etiqueta</span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="gerarEtiqueta()">
+                        <i class="fas fa-print me-2"></i>
+                        Gerar PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificação -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check me-2"></i>
+        <span id="notificationMessage">Operação realizada com sucesso!</span>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function mostrarLoading() {
+            $('#loading').css('display', 'flex');
+        }
+
+        function esconderLoading() {
+            $('#loading').hide();
+        }
+
+        function mostrarNotificacao(mensagem, tipo = 'success') {
+            const notification = $('#notification');
+            const message = $('#notificationMessage');
+            
+            message.text(mensagem);
+            notification.removeClass('success error').addClass(tipo);
+            notification.addClass('show');
+            
+            setTimeout(() => {
+                notification.removeClass('show');
+            }, 4000);
+        }
+
+        function formatarData(data) {
+            if (!data) return '';
+            const partes = data.split('-');
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+
+        function limparFormulario() {
+            $('#formLote')[0].reset();
+            sairModoEdicao(); // Sair do modo de edição se estiver ativo
+            $('#numeroLote').focus();
+        }
+
+        function consultarLotes() {
+            mostrarLoading();
+            
+            fetch('/compras/api/formulario-lote/consultar')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    if (result.error) {
+                        mostrarNotificacao(`Erro: ${result.error}`, 'error');
+                        return;
+                    }
+                    
+                    const tbody = $('#tabelaLotes');
+                    tbody.empty();
+                    
+                    $('#totalRegistros').text(result.total_registros);
+                    
+                    if (result.dados.length === 0) {
+                        tbody.append(`
+                            <tr>
+                                <td colspan="8" class="text-center">
+                                    <i class="fas fa-inbox me-2"></i>
+                                    Nenhum lote cadastrado
+                                </td>
+                            </tr>
+                        `);
+                        return;
+                    }
+                    
+                    result.dados.forEach(lote => {
+                        const observacao = lote.observacao ? 
+                            (lote.observacao.length > 30 ? 
+                                lote.observacao.substring(0, 30) + '...' : 
+                                lote.observacao) : '';
+                        
+                        tbody.append(`
+                            <tr>
+                                <td title="${lote.numero_lote}">${lote.numero_lote}</td>
+                                <td>${lote.data_recebimento}</td>
+                                <td>${lote.data_fabricacao || ''}</td>
+                                <td>${lote.data_validade || ''}</td>
+                                <td class="text-end">${lote.quantidade ? Number(lote.quantidade).toLocaleString('pt-BR', {minimumFractionDigits: 3}) : ''}</td>
+                                <td>${lote.numero_nota_fiscal}</td>
+                                <td title="${lote.observacao}">${observacao}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary btn-etiqueta me-1" onclick="editarLote(${lote.id})" title="Editar lote">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-warning btn-etiqueta" onclick="gerarEtiquetaLote(${lote.id})" title="Gerar etiqueta">
+                                        <i class="fas fa-tag"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    mostrarNotificacao(`Erro ao consultar lotes: ${error.message}`, 'error');
+                })
+                .finally(() => {
+                    esconderLoading();
+                });
+        }
+
+        // Formulário de cadastro/edição
+        $('#formLote').on('submit', function(e) {
+            e.preventDefault();
+            mostrarLoading();
+            
+            const dados = {
+                numero_lote: $('#numeroLote').val().trim(),
+                data_recebimento: formatarData($('#dataRecebimento').val()),
+                data_fabricacao: formatarData($('#dataFabricacao').val()),
+                data_validade: formatarData($('#dataValidade').val()),
+                quantidade: $('#quantidade').val().trim(),
+                observacao: $('#observacao').val().trim(),
+                numero_nota_fiscal: $('#numeroNotaFiscal').val().trim()
+            };
+            
+            const loteIdEdicao = $('#loteIdEdicao').val();
+            
+            let url, method;
+            if (loteIdEdicao) {
+                // Modo de edição - UPDATE
+                url = `/compras/api/formulario-lote/atualizar/${loteIdEdicao}`;
+                method = 'PUT';
+            } else {
+                // Modo de novo cadastro - INSERT
+                url = '/compras/api/formulario-lote/salvar';
+                method = 'POST';
+            }
+            
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => Promise.reject(err));
+                }
+                return response.json();
+            })
+            .then(result => {
+                if (result.success) {
+                    mostrarNotificacao(result.message, 'success');
+                    
+                    if (loteIdEdicao) {
+                        // Após atualizar, sair do modo de edição
+                        sairModoEdicao();
+                    }
+                    
+                    limparFormulario();
+                    consultarLotes(); // Atualizar lista
+                } else {
+                    mostrarNotificacao(result.message || 'Erro ao salvar', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                mostrarNotificacao(error.error || 'Erro ao salvar lote', 'error');
+            })
+            .finally(() => {
+                esconderLoading();
+            });
+        });
+
+        // Funções da Etiqueta
+        function abrirModalEtiqueta() {
+            // Atualizar preview dos dados
+            atualizarPreviewEtiqueta();
+            
+            // Abrir modal
+            const modal = new bootstrap.Modal(document.getElementById('modalEtiqueta'));
+            modal.show();
+        }
+        
+        function atualizarPreviewEtiqueta() {
+            const numeroLote = $('#numeroLote').val() || 'LOTE não informado';
+            const dataRecebimento = $('#dataRecebimento').val() ? formatarData($('#dataRecebimento').val()) : 'Data não informada';
+            const dataFabricacao = $('#dataFabricacao').val() ? formatarData($('#dataFabricacao').val()) : '';
+            const dataValidade = $('#dataValidade').val() ? formatarData($('#dataValidade').val()) : '';
+            const quantidade = $('#quantidade').val() || '';
+            const notaFiscal = $('#numeroNotaFiscal').val() || '';
+            
+            let preview = `<strong>Lote:</strong> ${numeroLote}<br>`;
+            preview += `<strong>Recebimento:</strong> ${dataRecebimento}<br>`;
+            if (dataFabricacao) preview += `<strong>Fabricação:</strong> ${dataFabricacao}<br>`;
+            if (dataValidade) preview += `<strong>Validade:</strong> ${dataValidade}<br>`;
+            if (quantidade) preview += `<strong>Quantidade:</strong> ${quantidade}<br>`;
+            if (notaFiscal) preview += `<strong>Nota Fiscal:</strong> ${notaFiscal}`;
+            
+            $('#dadosEtiquetaPreview').html(preview);
+        }
+        
+        function gerarEtiqueta() {
+            const numeroLote = $('#numeroLote').val();
+            
+            if (!numeroLote) {
+                mostrarNotificacao('Preencha o número do lote antes de gerar a etiqueta', 'error');
+                return;
+            }
+            
+            mostrarLoading();
+            
+            // Coletar dados do formulário
+            const dadosEtiqueta = {
+                numero_lote: numeroLote,
+                data_recebimento: formatarData($('#dataRecebimento').val()),
+                data_fabricacao: $('#dataFabricacao').val() ? formatarData($('#dataFabricacao').val()) : '',
+                data_validade: $('#dataValidade').val() ? formatarData($('#dataValidade').val()) : '',
+                quantidade: $('#quantidade').val(),
+                observacao: $('#observacao').val(),
+                numero_nota_fiscal: $('#numeroNotaFiscal').val(),
+                
+                // Configurações da etiqueta
+                largura: $('#larguraEtiqueta').val() || 100,
+                altura: $('#alturaEtiqueta').val() || 75,
+                tamanho_fonte: $('#tamanhoFonte').val() || 8
+            };
+            
+            enviarEtiqueta(dadosEtiqueta);
+        }
+        
+        function gerarEtiquetaLote(loteId) {
+            // Buscar dados do lote específico via API
+            mostrarLoading();
+            
+            fetch(`/compras/api/formulario-lote/buscar/${loteId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(loteEncontrado => {
+                    esconderLoading();
+                    
+                    if (!loteEncontrado) {
+                        mostrarNotificacao('Lote não encontrado', 'error');
+                        return;
+                    }
+            
+                    // Preencher formulário temporariamente com dados do lote
+                    $('#numeroLote').val(loteEncontrado.numero_lote);
+                    $('#dataRecebimento').val(loteEncontrado.data_recebimento); // Já vem no formato YYYY-MM-DD
+                    $('#dataFabricacao').val(loteEncontrado.data_fabricacao || '');
+                    $('#dataValidade').val(loteEncontrado.data_validade || '');
+                    $('#quantidade').val(loteEncontrado.quantidade ? loteEncontrado.quantidade.toString() : '');
+                    $('#observacao').val(loteEncontrado.observacao || '');
+                    $('#numeroNotaFiscal').val(loteEncontrado.numero_nota_fiscal || '');
+                    
+                    // Abrir modal de etiqueta
+                    abrirModalEtiqueta();
+                })
+                .catch(error => {
+                    esconderLoading();
+                    console.error('Erro:', error);
+                    mostrarNotificacao(`Erro ao carregar dados do lote: ${error.message}`, 'error');
+                });
+        }
+        
+        function enviarEtiqueta(dadosEtiqueta) {
+            // Fazer chamada para gerar PDF
+            fetch('/compras/api/formulario-lote/gerar-etiqueta', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dadosEtiqueta)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                // Criar link para download
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `etiqueta_${dadosEtiqueta.numero_lote}_${new Date().toISOString().split('T')[0]}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+                
+                // Fechar modal se estiver aberto
+                const modalEtiqueta = document.getElementById('modalEtiqueta');
+                if (modalEtiqueta && modalEtiqueta.classList.contains('show')) {
+                    bootstrap.Modal.getInstance(modalEtiqueta).hide();
+                    
+                    // Se não estamos em modo de edição, limpar formulário após gerar etiqueta
+                    if (!$('#loteIdEdicao').val()) {
+                        setTimeout(() => {
+                            limparFormulario();
+                        }, 500);
+                    }
+                }
+                
+                mostrarNotificacao('Etiqueta gerada com sucesso!', 'success');
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                mostrarNotificacao(`Erro ao gerar etiqueta: ${error.message}`, 'error');
+            })
+            .finally(() => {
+                esconderLoading();
+            });
+        }
+        
+        function editarLote(loteId) {
+            mostrarLoading();
+            
+            fetch(`/compras/api/formulario-lote/buscar/${loteId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(lote => {
+                    // Preencher formulário com dados do lote
+                    $('#loteIdEdicao').val(lote.id);
+                    $('#numeroLote').val(lote.numero_lote);
+                    $('#dataRecebimento').val(lote.data_recebimento);
+                    $('#dataFabricacao').val(lote.data_fabricacao);
+                    $('#dataValidade').val(lote.data_validade);
+                    $('#quantidade').val(lote.quantidade);
+                    $('#observacao').val(lote.observacao);
+                    $('#numeroNotaFiscal').val(lote.numero_nota_fiscal);
+                    
+                    // Mudar para modo de edição
+                    entrarModoEdicao();
+                    
+                    // Scroll para o formulário
+                    document.querySelector('#numeroLote').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Focar no primeiro campo
+                    $('#numeroLote').focus().select();
+                    
+                    mostrarNotificacao(`Lote ${lote.numero_lote} carregado para edição`, 'success');
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    mostrarNotificacao(`Erro ao carregar lote: ${error.message}`, 'error');
+                })
+                .finally(() => {
+                    esconderLoading();
+                });
+        }
+        
+        function entrarModoEdicao() {
+            // Mudar título
+            $('#iconeFormulario').removeClass('fa-plus-circle').addClass('fa-edit');
+            $('#textoTitulo').text('Editar Lote');
+            
+            // Mudar botão salvar
+            $('#iconeSalvar').removeClass('fa-save').addClass('fa-edit');
+            $('#textoSalvar').text('Atualizar Lote');
+            
+            // Mostrar botão cancelar edição
+            $('#btnCancelarEdicao').show();
+        }
+        
+        function sairModoEdicao() {
+            // Voltar título original
+            $('#iconeFormulario').removeClass('fa-edit').addClass('fa-plus-circle');
+            $('#textoTitulo').text('Cadastrar Novo Lote');
+            
+            // Voltar botão salvar original
+            $('#iconeSalvar').removeClass('fa-edit').addClass('fa-save');
+            $('#textoSalvar').text('Salvar Lote');
+            
+            // Esconder botão cancelar edição
+            $('#btnCancelarEdicao').hide();
+            
+            // Limpar ID de edição
+            $('#loteIdEdicao').val('');
+        }
+        
+        function cancelarEdicao() {
+            sairModoEdicao();
+            limparFormulario();
+            mostrarNotificacao('Edição cancelada', 'success');
+        }
+
+        // Inicializar página
+        $(document).ready(function() {
+            // Definir data atual como padrão
+            const hoje = new Date().toISOString().split('T')[0];
+            $('#dataRecebimento').val(hoje);
+            
+            // Carregar lotes existentes
+            consultarLotes();
+            
+            // Focar no primeiro campo
+            $('#numeroLote').focus();
+            
+            // Atualizar preview quando campos mudarem
+            $('#numeroLote, #dataRecebimento, #dataFabricacao, #dataValidade, #quantidade, #numeroNotaFiscal').on('input change', function() {
+                if ($('#modalEtiqueta').hasClass('show')) {
+                    atualizarPreviewEtiqueta();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
