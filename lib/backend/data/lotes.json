@@ -1,4 +1,17 @@
 {
-  "lotes": [],
-  "ultimo_id": 3
+  "lotes": [
+    {
+      "id": 4,
+      "numero_lote": "TESTE-123",
+      "id_item": "123",
+      "data_recebimento": null,
+      "data_fabricacao": "2026-01-01",
+      "data_validade": "2026-01-28",
+      "quantidade": 100.0,
+      "numero_nota_fiscal": "12345",
+      "observacao": null,
+      "dt_cadastro": "2026-01-26 15:25:44"
+    }
+  ],
+  "ultimo_id": 4
 }
