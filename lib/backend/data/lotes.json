@@ -22,7 +22,20 @@
       "numero_nota_fiscal": "450",
       "observacao": null,
       "dt_cadastro": "2026-01-26 11:47:49"
+    },
+    {
+      "id": 3,
+      "numero_lote": "LOTE001",
+      "id_item": "123",
+      "data_recebimento": null,
+      "data_fabricacao": "2026-01-01",
+      "data_validade": "2026-01-26",
+      "quantidade": 10.0,
+      "numero_nota_fiscal": "450",
+      "observacao": null,
+      "dt_cadastro": "2026-01-26 12:15:36",
+      "dt_atualizacao": "2026-01-26 12:15:56"
     }
   ],
-  "ultimo_id": 2
+  "ultimo_id": 3
 }

@@ -71,9 +71,6 @@ def api_criar_lote():
         if not numero_lote:
             return jsonify({'error': 'Numero do lote e obrigatorio'}), 400
 
-        if not data_recebimento:
-            return jsonify({'error': 'Data de recebimento e obrigatoria'}), 400
-
         # Tratar quantidade
         quantidade = dados.get('quantidade', '').strip()
         quantidade_valor = None
@@ -85,7 +82,8 @@ def api_criar_lote():
 
         lote, erro = criar_lote(
             numero_lote=numero_lote,
-            data_recebimento=data_recebimento,
+            id_item=dados.get('id_item', '').strip() or None,
+            data_recebimento=data_recebimento or None,
             data_fabricacao=dados.get('data_fabricacao', '').strip() or None,
             data_validade=dados.get('data_validade', '').strip() or None,
             quantidade=quantidade_valor,
@@ -118,9 +116,6 @@ def api_atualizar_lote(lote_id):
         if not numero_lote:
             return jsonify({'error': 'Numero do lote e obrigatorio'}), 400
 
-        if not data_recebimento:
-            return jsonify({'error': 'Data de recebimento e obrigatoria'}), 400
-
         # Tratar quantidade
         quantidade = dados.get('quantidade', '').strip()
         quantidade_valor = None
@@ -133,7 +128,8 @@ def api_atualizar_lote(lote_id):
         lote, erro = atualizar_lote(
             lote_id=lote_id,
             numero_lote=numero_lote,
-            data_recebimento=data_recebimento,
+            id_item=dados.get('id_item', '').strip() or None,
+            data_recebimento=data_recebimento or None,
             data_fabricacao=dados.get('data_fabricacao', '').strip() or None,
             data_validade=dados.get('data_validade', '').strip() or None,
             quantidade=quantidade_valor,
@@ -232,13 +228,17 @@ def api_gerar_etiqueta():
 
         # Gerar codigo para QR Code
         numero_lote = dados.get('numero_lote', '').strip()
-        valores_aleatorios = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        data_fab_qr = dados.get('data_fabricacao', '').strip()
+        data_val_qr = dados.get('data_validade', '').strip()
 
-        if numero_lote:
-            lote_limpo = numero_lote.replace(' ', '_').replace('\n', '').replace('\r', '')
-            codigo_qr = f"{lote_limpo}-{valores_aleatorios}"
-        else:
-            codigo_qr = f"LOTE_VAZIO-{valores_aleatorios}"
+        # Formato: LOTE - FAB - VAL
+        partes_qr = [numero_lote or 'SEM_LOTE']
+        if data_fab_qr:
+            partes_qr.append(data_fab_qr)
+        if data_val_qr:
+            partes_qr.append(data_val_qr)
+
+        codigo_qr = ' - '.join(partes_qr)
 
         # Gerar QR Code
         qr = qrcode.QRCode(
@@ -270,6 +270,16 @@ def api_gerar_etiqueta():
             lote_x = (largura - lote_largura) / 2
             c.drawString(lote_x, y, lote_texto)
             y -= line_height * 1.0
+
+        # ID DO ITEM
+        id_item = dados.get('id_item', '')
+        if id_item:
+            c.setFont("Helvetica-Bold", tamanho_fonte)
+            item_texto = f"ID Item: {id_item}"
+            item_largura = c.stringWidth(item_texto, "Helvetica-Bold", tamanho_fonte)
+            item_x = (largura - item_largura) / 2
+            c.drawString(item_x, y, item_texto)
+            y -= line_height
 
         # INFORMACOES
         c.setFont("Helvetica", tamanho_fonte)

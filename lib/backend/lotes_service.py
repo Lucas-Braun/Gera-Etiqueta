@@ -37,7 +37,7 @@ def buscar_lote_por_id(lote_id):
     return None
 
 
-def criar_lote(numero_lote, data_recebimento, data_fabricacao=None, data_validade=None,
+def criar_lote(numero_lote, id_item=None, data_recebimento=None, data_fabricacao=None, data_validade=None,
                quantidade=None, numero_nota_fiscal=None, observacao=None):
     """Cria um novo lote"""
     dados = carregar_lotes()
@@ -47,6 +47,7 @@ def criar_lote(numero_lote, data_recebimento, data_fabricacao=None, data_validad
     novo_lote = {
         'id': novo_id,
         'numero_lote': numero_lote.upper(),
+        'id_item': id_item,
         'data_recebimento': data_recebimento,
         'data_fabricacao': data_fabricacao,
         'data_validade': data_validade,
@@ -63,7 +64,7 @@ def criar_lote(numero_lote, data_recebimento, data_fabricacao=None, data_validad
     return novo_lote, None
 
 
-def atualizar_lote(lote_id, numero_lote=None, data_recebimento=None, data_fabricacao=None,
+def atualizar_lote(lote_id, numero_lote=None, id_item=None, data_recebimento=None, data_fabricacao=None,
                   data_validade=None, quantidade=None, numero_nota_fiscal=None, observacao=None):
     """Atualiza um lote existente"""
     dados = carregar_lotes()
@@ -72,6 +73,8 @@ def atualizar_lote(lote_id, numero_lote=None, data_recebimento=None, data_fabric
         if lote['id'] == lote_id:
             if numero_lote is not None:
                 dados['lotes'][i]['numero_lote'] = numero_lote.upper()
+            if id_item is not None:
+                dados['lotes'][i]['id_item'] = id_item
             if data_recebimento is not None:
                 dados['lotes'][i]['data_recebimento'] = data_recebimento
             if data_fabricacao is not None:

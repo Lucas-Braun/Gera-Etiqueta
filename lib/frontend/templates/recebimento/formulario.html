@@ -186,19 +186,32 @@
                     <form id="formLote">
                         <input type="hidden" id="loteIdEdicao" value="">
 
-                        <div class="mb-3">
-                            <label for="numeroLote" class="form-label">
-                                Numero do Lote <span class="campo-obrigatorio">*</span>
-                            </label>
-                            <input type="text" class="form-control" id="numeroLote"
-                                   placeholder="Ex: LOTE001-2025" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="numeroLote" class="form-label">
+                                        Numero do Lote <span class="campo-obrigatorio">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" id="numeroLote"
+                                           placeholder="Ex: LOTE001-2025" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="idItem" class="form-label">
+                                        ID do Item
+                                    </label>
+                                    <input type="text" class="form-control" id="idItem"
+                                           placeholder="Ex: 12345">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="dataRecebimento" class="form-label">
-                                Data do Recebimento <span class="campo-obrigatorio">*</span>
+                                Data do Recebimento
                             </label>
-                            <input type="date" class="form-control" id="dataRecebimento" required>
+                            <input type="date" class="form-control" id="dataRecebimento">
                         </div>
 
                         <div class="row">
@@ -274,6 +287,7 @@
                             <thead>
                                 <tr>
                                     <th>Lote</th>
+                                    <th>ID Item</th>
                                     <th>Recebimento</th>
                                     <th>Validade</th>
                                     <th>NF</th>
@@ -380,8 +394,6 @@
             document.getElementById('textoSalvar').textContent = 'Salvar';
             document.getElementById('btnCancelar').style.display = 'none';
 
-            // Data atual
-            document.getElementById('dataRecebimento').value = new Date().toISOString().split('T')[0];
             document.getElementById('numeroLote').focus();
         }
 
@@ -402,7 +414,7 @@
                     tbody.innerHTML = '';
 
                     if (result.dados.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="5" class="text-center">Nenhum lote cadastrado</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="6" class="text-center">Nenhum lote cadastrado</td></tr>';
                         return;
                     }
 
@@ -410,7 +422,8 @@
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td title="${lote.numero_lote}">${lote.numero_lote}</td>
-                            <td>${formatarDataExibicao(lote.data_recebimento)}</td>
+                            <td>${lote.id_item || '-'}</td>
+                            <td>${formatarDataExibicao(lote.data_recebimento) || '-'}</td>
                             <td>${formatarDataExibicao(lote.data_validade) || '-'}</td>
                             <td>${lote.numero_nota_fiscal || '-'}</td>
                             <td>
@@ -443,6 +456,7 @@
             const loteIdEdicao = document.getElementById('loteIdEdicao').value;
             const dados = {
                 numero_lote: document.getElementById('numeroLote').value.trim(),
+                id_item: document.getElementById('idItem').value.trim(),
                 data_recebimento: document.getElementById('dataRecebimento').value,
                 data_fabricacao: document.getElementById('dataFabricacao').value,
                 data_validade: document.getElementById('dataValidade').value,
@@ -496,7 +510,8 @@
 
                     document.getElementById('loteIdEdicao').value = lote.id;
                     document.getElementById('numeroLote').value = lote.numero_lote;
-                    document.getElementById('dataRecebimento').value = lote.data_recebimento;
+                    document.getElementById('idItem').value = lote.id_item || '';
+                    document.getElementById('dataRecebimento').value = lote.data_recebimento || '';
                     document.getElementById('dataFabricacao').value = lote.data_fabricacao || '';
                     document.getElementById('dataValidade').value = lote.data_validade || '';
                     document.getElementById('quantidade').value = lote.quantidade || '';
@@ -559,7 +574,7 @@
             const notaFiscal = document.getElementById('numeroNotaFiscal').value;
 
             let preview = `<strong>Lote:</strong> ${numeroLote}<br>`;
-            preview += `<strong>Recebimento:</strong> ${formatarDataExibicao(dataRecebimento) || 'Nao informado'}<br>`;
+            if (dataRecebimento) preview += `<strong>Recebimento:</strong> ${formatarDataExibicao(dataRecebimento)}<br>`;
             if (dataValidade) preview += `<strong>Validade:</strong> ${formatarDataExibicao(dataValidade)}<br>`;
             if (notaFiscal) preview += `<strong>NF:</strong> ${notaFiscal}`;
 
@@ -578,6 +593,7 @@
 
             const dadosEtiqueta = {
                 numero_lote: numeroLote,
+                id_item: document.getElementById('idItem').value,
                 data_recebimento: formatarDataApi(document.getElementById('dataRecebimento').value),
                 data_fabricacao: formatarDataApi(document.getElementById('dataFabricacao').value),
                 data_validade: formatarDataApi(document.getElementById('dataValidade').value),
@@ -631,7 +647,8 @@
                     }
 
                     document.getElementById('numeroLote').value = lote.numero_lote;
-                    document.getElementById('dataRecebimento').value = lote.data_recebimento;
+                    document.getElementById('idItem').value = lote.id_item || '';
+                    document.getElementById('dataRecebimento').value = lote.data_recebimento || '';
                     document.getElementById('dataFabricacao').value = lote.data_fabricacao || '';
                     document.getElementById('dataValidade').value = lote.data_validade || '';
                     document.getElementById('quantidade').value = lote.quantidade || '';
@@ -649,7 +666,6 @@
 
         // Inicializar
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('dataRecebimento').value = new Date().toISOString().split('T')[0];
             consultarLotes();
             document.getElementById('numeroLote').focus();
 
