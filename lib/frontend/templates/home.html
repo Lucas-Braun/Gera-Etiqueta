@@ -16,33 +16,94 @@
 
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Particulas de fundo */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
         }
 
         .container-main {
             text-align: center;
             padding: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         .logo-section {
-            margin-bottom: 50px;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-icon {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .logo-section h1 {
-            font-size: 3.5rem;
+            font-size: 2.8rem;
             font-weight: 700;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
         }
 
         .logo-section p {
-            font-size: 1.2rem;
-            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.7);
             margin-top: 10px;
+            letter-spacing: 1px;
         }
 
         .modules-container {
@@ -50,110 +111,245 @@
             gap: 30px;
             justify-content: center;
             flex-wrap: wrap;
+            max-width: 1000px;
         }
 
         .module-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px 50px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 40px 35px;
             width: 280px;
             text-decoration: none;
-            color: #333;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
+            color: white;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .module-card:nth-child(1) { animation-delay: 0.1s; }
+        .module-card:nth-child(2) { animation-delay: 0.2s; }
+        .module-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .module-card:hover::before {
+            left: 100%;
         }
 
         .module-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            color: #333;
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            color: white;
         }
 
-        .module-card i {
-            font-size: 4rem;
-            margin-bottom: 20px;
+        .module-card.industria:hover {
+            border-color: #667eea;
+            box-shadow: 0 30px 60px rgba(102, 126, 234, 0.3);
         }
 
-        .module-card.industria i {
-            color: #667eea;
+        .module-card.recebimento:hover {
+            border-color: #28a745;
+            box-shadow: 0 30px 60px rgba(40, 167, 69, 0.3);
         }
 
-        .module-card.recebimento i {
-            color: #28a745;
+        .module-card.itens:hover {
+            border-color: #fd7e14;
+            box-shadow: 0 30px 60px rgba(253, 126, 20, 0.3);
         }
 
-        .module-card.itens i {
-            color: #fd7e14;
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            transition: all 0.3s ease;
+        }
+
+        .module-card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .module-card.industria .card-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .module-card.recebimento .card-icon {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .module-card.itens .card-icon {
+            background: linear-gradient(135deg, #fd7e14 0%, #ffc107 100%);
+        }
+
+        .card-icon i {
+            font-size: 2.5rem;
+            color: white;
         }
 
         .module-card h3 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
         }
 
         .module-card p {
-            font-size: 0.95rem;
-            color: #666;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
             margin: 0;
+            line-height: 1.5;
         }
 
-        .module-card.disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            pointer-events: none;
+        .card-arrow {
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            color: rgba(255,255,255,0.5);
         }
 
-        .module-card .badge-soon {
-            background: #ffc107;
-            color: #333;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-top: 15px;
-            display: inline-block;
+        .module-card:hover .card-arrow {
+            opacity: 1;
+            transform: translateX(0);
         }
 
         .footer {
-            margin-top: 50px;
-            color: rgba(255,255,255,0.7);
-            font-size: 0.9rem;
+            margin-top: 60px;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+            animation: fadeInUp 0.8s ease-out 0.5s backwards;
+        }
+
+        .footer a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .logo-section h1 {
+                font-size: 2rem;
+            }
+
+            .logo-icon {
+                font-size: 3rem;
+            }
+
+            .module-card {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            .modules-container {
+                gap: 20px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Particulas de fundo -->
+    <div class="bg-particles" id="particles"></div>
+
     <div class="container-main">
         <div class="logo-section">
-            <h1><i class="bx bx-barcode"></i> Sistema de Etiquetas</h1>
+            <div class="logo-icon">
+                <i class="bx bx-qr-scan"></i>
+            </div>
+            <h1>Sistema de Etiquetas</h1>
             <p>Selecione o modulo desejado</p>
         </div>
 
         <div class="modules-container">
             <a href="{{ url_for('etiqueta.home') }}" class="module-card industria">
-                <i class="bx bx-factory"></i>
+                <div class="card-icon">
+                    <i class="bx bx-factory"></i>
+                </div>
                 <h3>Industria</h3>
                 <p>Etiquetas para producao e expedicao de produtos</p>
+                <div class="card-arrow">
+                    <i class="bx bx-right-arrow-alt"></i> Acessar
+                </div>
             </a>
 
             <a href="{{ url_for('recebimento.home') }}" class="module-card recebimento">
-                <i class="bx bx-package"></i>
+                <div class="card-icon">
+                    <i class="bx bx-package"></i>
+                </div>
                 <h3>Recebimento</h3>
                 <p>Etiquetas para recebimento de materiais</p>
+                <div class="card-arrow">
+                    <i class="bx bx-right-arrow-alt"></i> Acessar
+                </div>
             </a>
 
             <a href="{{ url_for('itens.home') }}" class="module-card itens">
-                <i class="bx bx-box"></i>
+                <div class="card-icon">
+                    <i class="bx bx-box"></i>
+                </div>
                 <h3>Itens</h3>
                 <p>Cadastro e gerenciamento de itens</p>
+                <div class="card-arrow">
+                    <i class="bx bx-right-arrow-alt"></i> Acessar
+                </div>
             </a>
         </div>
 
         <div class="footer">
-            <p>&copy; 2026 - Todos os direitos reservados</p>
+            <p>Lempay &copy; 2026</p>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Criar particulas de fundo
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.width = (Math.random() * 4 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+        }
+
+        createParticles();
+    </script>
 </body>
 </html>
