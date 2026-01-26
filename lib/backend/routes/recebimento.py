@@ -232,14 +232,24 @@ def api_gerar_etiqueta():
         data_fab_qr = dados.get('data_fabricacao', '').strip()
         data_val_qr = dados.get('data_validade', '').strip()
 
-        # Formato: Lote: 001 - F:01/01/2026 V:26/01/2026
-        # Construindo string com caracteres ASCII puros
-        lote_str = numero_lote if numero_lote else "N/A"
-        codigo_qr = "Lote" + chr(58) + " " + lote_str
+        # Formato: Lote=001 | Fab=01-01-2026 | Val=26-01-2026
+        # Usando apenas caracteres ASCII seguros
+        lote_str = numero_lote if numero_lote else "NA"
+        # Converter datas de dd/mm/yyyy para dd-mm-yyyy
         if data_fab_qr:
-            codigo_qr += " - F" + chr(58) + data_fab_qr
+            data_fab_qr = data_fab_qr.replace('/', '-')
         if data_val_qr:
-            codigo_qr += " V" + chr(58) + data_val_qr
+            data_val_qr = data_val_qr.replace('/', '-')
+
+        partes = ['Lote=' + lote_str]
+        if data_fab_qr:
+            partes.append('Fab=' + data_fab_qr)
+        if data_val_qr:
+            partes.append('Val=' + data_val_qr)
+
+        codigo_qr = ' | '.join(partes)
+        # Garantir que e ASCII puro
+        codigo_qr = codigo_qr.encode('ascii', 'replace').decode('ascii')
 
         # Gerar QR Code
         qr = qrcode.QRCode(
