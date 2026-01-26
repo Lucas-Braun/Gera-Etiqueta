@@ -477,6 +477,34 @@
         </div>
     </div>
 
+    <!-- Modal Confirmar Exclusao -->
+    <div class="modal fade" id="modalConfirmarExclusao" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="bx bx-trash"></i> Confirmar Exclusao
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <i class="bx bx-error-circle text-danger" style="font-size: 64px;"></i>
+                    <h5 class="mt-3">Deseja realmente excluir este lote?</h5>
+                    <p class="text-muted mb-0">Esta acao nao pode ser desfeita.</p>
+                    <p class="mt-2"><strong id="loteExclusaoInfo"></strong></p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bx bx-x"></i> Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="confirmarExclusao()">
+                        <i class="bx bx-trash"></i> Excluir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Loading -->
     <div class="loading" id="loading">
         <div class="text-center">
@@ -794,12 +822,26 @@
                 });
         }
 
-        function deletarLote(loteId) {
-            if (!confirm('Deseja realmente excluir este lote?')) return;
+        let loteIdParaExcluir = null;
 
+        function deletarLote(loteId) {
+            // Buscar info do lote para mostrar no modal
+            const lote = todosLotes.find(l => l.id === loteId);
+            const info = lote ? `Lote: ${lote.numero_lote}` : '';
+            document.getElementById('loteExclusaoInfo').textContent = info;
+
+            loteIdParaExcluir = loteId;
+            const modal = new bootstrap.Modal(document.getElementById('modalConfirmarExclusao'));
+            modal.show();
+        }
+
+        function confirmarExclusao() {
+            if (!loteIdParaExcluir) return;
+
+            bootstrap.Modal.getInstance(document.getElementById('modalConfirmarExclusao')).hide();
             mostrarLoading();
 
-            fetch(`/recebimento/api/lotes/${loteId}`, { method: 'DELETE' })
+            fetch(`/recebimento/api/lotes/${loteIdParaExcluir}`, { method: 'DELETE' })
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
@@ -814,6 +856,7 @@
                 })
                 .finally(() => {
                     esconderLoading();
+                    loteIdParaExcluir = null;
                 });
         }
 
