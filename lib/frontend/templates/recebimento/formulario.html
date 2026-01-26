@@ -298,9 +298,30 @@
                                 <div class="mb-3">
                                     <label for="idItem" class="form-label">
                                         ID do Item
+                                        <span id="statusBuscaItem" class="ms-2"></span>
                                     </label>
-                                    <input type="text" class="form-control" id="idItem"
-                                           placeholder="Ex: 12345">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="idItem"
+                                               placeholder="Ex: 12345">
+                                        <button class="btn btn-outline-secondary" type="button" id="btnBuscarItem" onclick="buscarItemManual()">
+                                            <i class="bx bx-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" id="infoItemContainer" style="display: none;">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label class="form-label">Descrição do Item</label>
+                                    <input type="text" class="form-control bg-light" id="descricaoItem" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Unidade</label>
+                                    <input type="text" class="form-control bg-light" id="unidadeItem" readonly>
                                 </div>
                             </div>
                         </div>
@@ -626,6 +647,10 @@
             document.getElementById('textoSalvar').textContent = 'Salvar';
             document.getElementById('btnCancelar').style.display = 'none';
 
+            // Limpar info do item
+            document.getElementById('statusBuscaItem').innerHTML = '';
+            limparInfoItem();
+
             document.getElementById('numeroLote').focus();
         }
 
@@ -832,6 +857,14 @@
                     document.getElementById('numeroNotaFiscal').value = lote.numero_nota_fiscal || '';
                     document.getElementById('observacao').value = lote.observacao || '';
 
+                    // Buscar info do item se tiver ID
+                    if (lote.id_item) {
+                        buscarItemPorNumero(lote.id_item);
+                    } else {
+                        limparInfoItem();
+                        document.getElementById('statusBuscaItem').innerHTML = '';
+                    }
+
                     document.getElementById('tituloFormulario').innerHTML = '<i class="bx bx-edit"></i> Editar Lote';
                     document.getElementById('textoSalvar').textContent = 'Atualizar';
                     document.getElementById('btnCancelar').style.display = 'inline-block';
@@ -923,6 +956,7 @@
             const dadosEtiqueta = {
                 numero_lote: numeroLote,
                 id_item: document.getElementById('idItem').value,
+                descricao_item: document.getElementById('descricaoItem').value,
                 data_recebimento: formatarDataApi(document.getElementById('dataRecebimento').value),
                 data_fabricacao: formatarDataApi(document.getElementById('dataFabricacao').value),
                 data_validade: formatarDataApi(document.getElementById('dataValidade').value),
@@ -1035,55 +1069,141 @@
         function gerarEtiquetaLoteDireto(lote, imprimir = false, quantidadeEtiquetas = 1) {
             mostrarLoading();
 
-            const dadosEtiqueta = {
-                numero_lote: lote.numero_lote,
-                id_item: lote.id_item || '',
-                data_recebimento: formatarDataApi(lote.data_recebimento || ''),
-                data_fabricacao: formatarDataApi(lote.data_fabricacao || ''),
-                data_validade: formatarDataApi(lote.data_validade || ''),
-                quantidade: lote.quantidade || '',
-                observacao: lote.observacao || '',
-                numero_nota_fiscal: lote.numero_nota_fiscal || '',
-                largura: 100,
-                altura: 75,
-                tamanho_fonte: 8,
-                quantidade_etiquetas: quantidadeEtiquetas
-            };
+            // Funcao para gerar a etiqueta com os dados
+            function executarGeracaoEtiqueta(descricaoItem) {
+                const dadosEtiqueta = {
+                    numero_lote: lote.numero_lote,
+                    id_item: lote.id_item || '',
+                    descricao_item: descricaoItem || '',
+                    data_recebimento: formatarDataApi(lote.data_recebimento || ''),
+                    data_fabricacao: formatarDataApi(lote.data_fabricacao || ''),
+                    data_validade: formatarDataApi(lote.data_validade || ''),
+                    quantidade: lote.quantidade || '',
+                    observacao: lote.observacao || '',
+                    numero_nota_fiscal: lote.numero_nota_fiscal || '',
+                    largura: 100,
+                    altura: 75,
+                    tamanho_fonte: 8,
+                    quantidade_etiquetas: quantidadeEtiquetas
+                };
 
-            fetch('/recebimento/api/gerar-etiqueta', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dadosEtiqueta)
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Erro ao gerar etiqueta');
-                return response.blob();
-            })
-            .then(blob => {
-                const url = window.URL.createObjectURL(blob);
+                fetch('/recebimento/api/gerar-etiqueta', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dadosEtiqueta)
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao gerar etiqueta');
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
 
-                if (imprimir) {
-                    const printWindow = window.open(url, '_blank');
-                    printWindow.onload = function() {
-                        printWindow.print();
-                    };
-                    mostrarNotificacao('Abrindo impressão...', 'success');
-                } else {
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `etiqueta_${lote.numero_lote}_${new Date().toISOString().split('T')[0]}.pdf`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    mostrarNotificacao('Etiqueta baixada!', 'success');
-                }
-            })
-            .catch(error => {
-                mostrarNotificacao('Erro: ' + error.message, 'error');
-            })
-            .finally(() => {
-                esconderLoading();
-            });
+                    if (imprimir) {
+                        const printWindow = window.open(url, '_blank');
+                        printWindow.onload = function() {
+                            printWindow.print();
+                        };
+                        mostrarNotificacao('Abrindo impressão...', 'success');
+                    } else {
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `etiqueta_${lote.numero_lote}_${new Date().toISOString().split('T')[0]}.pdf`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        mostrarNotificacao('Etiqueta baixada!', 'success');
+                    }
+                })
+                .catch(error => {
+                    mostrarNotificacao('Erro: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    esconderLoading();
+                });
+            }
+
+            // Se tem id_item, buscar descricao primeiro
+            if (lote.id_item) {
+                fetch(`/itens/api/itens/numero/${encodeURIComponent(lote.id_item)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            executarGeracaoEtiqueta('');
+                        } else {
+                            executarGeracaoEtiqueta(data.descricao || '');
+                        }
+                    })
+                    .catch(() => {
+                        executarGeracaoEtiqueta('');
+                    });
+            } else {
+                executarGeracaoEtiqueta('');
+            }
+        }
+
+        // ========== BUSCA AUTOMATICA DE ITEM ==========
+        let timeoutBuscaItem = null;
+
+        function buscarItemPorNumero(numeroItem) {
+            if (!numeroItem || numeroItem.trim() === '') {
+                limparInfoItem();
+                return;
+            }
+
+            const statusEl = document.getElementById('statusBuscaItem');
+            statusEl.innerHTML = '<i class="bx bx-loader-alt bx-spin text-primary"></i>';
+
+            fetch(`/itens/api/itens/numero/${encodeURIComponent(numeroItem.trim())}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        statusEl.innerHTML = '<i class="bx bx-x-circle text-danger" title="Item não encontrado"></i>';
+                        limparInfoItem();
+                    } else {
+                        statusEl.innerHTML = '<i class="bx bx-check-circle text-success" title="Item encontrado"></i>';
+                        mostrarInfoItem(data);
+                    }
+                })
+                .catch(error => {
+                    statusEl.innerHTML = '<i class="bx bx-error text-warning" title="Erro na busca"></i>';
+                    limparInfoItem();
+                });
+        }
+
+        function mostrarInfoItem(item) {
+            document.getElementById('descricaoItem').value = item.descricao || '';
+            document.getElementById('unidadeItem').value = item.unidade_medida || '';
+            document.getElementById('infoItemContainer').style.display = 'flex';
+        }
+
+        function limparInfoItem() {
+            document.getElementById('descricaoItem').value = '';
+            document.getElementById('unidadeItem').value = '';
+            document.getElementById('infoItemContainer').style.display = 'none';
+        }
+
+        function buscarItemManual() {
+            const numeroItem = document.getElementById('idItem').value;
+            buscarItemPorNumero(numeroItem);
+        }
+
+        // Busca automatica com debounce (aguarda 500ms apos parar de digitar)
+        function onIdItemInput() {
+            clearTimeout(timeoutBuscaItem);
+            const numeroItem = document.getElementById('idItem').value;
+
+            if (!numeroItem || numeroItem.trim() === '') {
+                document.getElementById('statusBuscaItem').innerHTML = '';
+                limparInfoItem();
+                return;
+            }
+
+            document.getElementById('statusBuscaItem').innerHTML = '<i class="bx bx-dots-horizontal-rounded text-muted"></i>';
+
+            timeoutBuscaItem = setTimeout(() => {
+                buscarItemPorNumero(numeroItem);
+            }, 500);
         }
 
         // Inicializar
@@ -1095,6 +1215,9 @@
             ['numeroLote', 'dataRecebimento', 'dataValidade', 'numeroNotaFiscal'].forEach(id => {
                 document.getElementById(id).addEventListener('input', atualizarPreviewEtiqueta);
             });
+
+            // Busca automatica de item
+            document.getElementById('idItem').addEventListener('input', onIdItemInput);
         });
     </script>
 </body>

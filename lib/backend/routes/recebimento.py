@@ -281,6 +281,18 @@ def api_gerar_etiqueta():
                 c.drawString(item_x, y, item_texto)
                 y -= line_height
 
+            # DESCRICAO DO ITEM
+            descricao_item = dados.get('descricao_item', '')
+            if descricao_item:
+                c.setFont("Helvetica", tamanho_fonte)
+                # Limitar descricao para caber na etiqueta
+                desc_max = max(40, int(texto_largura / (tamanho_fonte * 0.5)))
+                desc_texto = descricao_item[:desc_max] + "..." if len(descricao_item) > desc_max else descricao_item
+                desc_largura = c.stringWidth(desc_texto, "Helvetica", tamanho_fonte)
+                desc_x = (largura - desc_largura) / 2
+                c.drawString(desc_x, y, desc_texto)
+                y -= line_height
+
             # INFORMACOES
             c.setFont("Helvetica", tamanho_fonte)
 
