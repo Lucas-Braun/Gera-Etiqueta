@@ -241,13 +241,13 @@ def api_gerar_etiqueta():
         if data_val_qr:
             data_val_qr = data_val_qr.replace('/', '-')
 
-        partes = ['Lote=' + lote_str]
+        partes = ['Lote ' + lote_str]
         if data_fab_qr:
-            partes.append('Fab=' + data_fab_qr)
+            partes.append('Fab ' + data_fab_qr)
         if data_val_qr:
-            partes.append('Val=' + data_val_qr)
+            partes.append('Val ' + data_val_qr)
 
-        codigo_qr = ' | '.join(partes)
+        codigo_qr = ' - '.join(partes)
         # Garantir que e ASCII puro
         codigo_qr = codigo_qr.encode('ascii', 'replace').decode('ascii')
 
