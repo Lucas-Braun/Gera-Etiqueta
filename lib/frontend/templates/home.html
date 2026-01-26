@@ -82,6 +82,10 @@
             color: #28a745;
         }
 
+        .module-card.itens i {
+            color: #fd7e14;
+        }
+
         .module-card h3 {
             font-size: 1.5rem;
             font-weight: 700;
@@ -136,6 +140,12 @@
                 <i class="bx bx-package"></i>
                 <h3>Recebimento</h3>
                 <p>Etiquetas para recebimento de materiais</p>
+            </a>
+
+            <a href="{{ url_for('itens.home') }}" class="module-card itens">
+                <i class="bx bx-box"></i>
+                <h3>Itens</h3>
+                <p>Cadastro e gerenciamento de itens</p>
             </a>
         </div>
 

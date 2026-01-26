@@ -12,8 +12,10 @@ app.secret_key = 'etiqueta-sistema-2025-chave-secreta'
 # Registrar blueprints
 from lib.backend.routes.etiqueta import etiqueta_bp
 from lib.backend.routes.recebimento import recebimento_bp
+from lib.backend.routes.itens import itens_bp
 app.register_blueprint(etiqueta_bp)
 app.register_blueprint(recebimento_bp)
+app.register_blueprint(itens_bp)
 
 
 # Pagina principal - escolha de modulos
