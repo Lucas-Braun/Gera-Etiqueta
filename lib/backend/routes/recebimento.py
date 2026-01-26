@@ -229,27 +229,12 @@ def api_gerar_etiqueta():
         area_util_altura = altura - (2 * y_margin)
         y_start = altura - y_margin - (titulo_fonte + 2)
 
-        # Gerar codigo para QR Code
+        # Gerar codigo para QR Code - somente ID do Item
         numero_lote = dados.get('numero_lote', '').strip()
-        data_fab_qr = dados.get('data_fabricacao', '').strip()
-        data_val_qr = dados.get('data_validade', '').strip()
+        id_item_qr = dados.get('id_item', '').strip()
 
-        # Formato: Lote=001 | Fab=01-01-2026 | Val=26-01-2026
-        # Usando apenas caracteres ASCII seguros
-        lote_str = numero_lote if numero_lote else "NA"
-        # Converter datas de dd/mm/yyyy para dd-mm-yyyy
-        if data_fab_qr:
-            data_fab_qr = data_fab_qr.replace('/', '-')
-        if data_val_qr:
-            data_val_qr = data_val_qr.replace('/', '-')
-
-        partes = ['Lote ' + lote_str]
-        if data_fab_qr:
-            partes.append('Fab ' + data_fab_qr)
-        if data_val_qr:
-            partes.append('Val ' + data_val_qr)
-
-        codigo_qr = ' - '.join(partes)
+        # QR Code contem apenas o ID do Item
+        codigo_qr = id_item_qr if id_item_qr else 'SEM_ID'
         # Garantir que e ASCII puro
         codigo_qr = codigo_qr.encode('ascii', 'replace').decode('ascii')
 
@@ -386,7 +371,7 @@ def api_gerar_etiqueta():
             rodape_y = y_margin + rodape_fonte
 
             c.setFont("Helvetica", rodape_fonte)
-            rodape_texto = f"QR: {codigo_qr}  |  Gerado: {data_geracao}"
+            rodape_texto = f"ID: {codigo_qr}  |  Gerado: {data_geracao}"
             rodape_largura = c.stringWidth(rodape_texto, "Helvetica", rodape_fonte)
             rodape_x = (largura - rodape_largura) / 2
             c.drawString(rodape_x, rodape_y, rodape_texto)
