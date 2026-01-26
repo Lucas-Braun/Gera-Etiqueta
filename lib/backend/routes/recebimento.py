@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Blueprint, render_template, request, jsonify, send_file
 from datetime import datetime
 import io
@@ -231,14 +232,14 @@ def api_gerar_etiqueta():
         data_fab_qr = dados.get('data_fabricacao', '').strip()
         data_val_qr = dados.get('data_validade', '').strip()
 
-        # Formato: LOTE - FAB - VAL
-        partes_qr = [numero_lote or 'SEM_LOTE']
+        # Formato: Lote: 001 - F:01/01/2026 V:26/01/2026
+        # Construindo string com caracteres ASCII puros
+        lote_str = numero_lote if numero_lote else "N/A"
+        codigo_qr = "Lote" + chr(58) + " " + lote_str
         if data_fab_qr:
-            partes_qr.append(data_fab_qr)
+            codigo_qr += " - F" + chr(58) + data_fab_qr
         if data_val_qr:
-            partes_qr.append(data_val_qr)
-
-        codigo_qr = ' - '.join(partes_qr)
+            codigo_qr += " V" + chr(58) + data_val_qr
 
         # Gerar QR Code
         qr = qrcode.QRCode(
