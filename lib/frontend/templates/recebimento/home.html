@@ -128,6 +128,11 @@
                             <i class="bx bx-plus-circle"></i> Formulario de Lote
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('itens.home') }}">
+                            <i class="bx bx-box"></i> Itens
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -146,6 +151,11 @@
                 <i class="bx bx-list-plus"></i>
                 <h3>Formulario de Lote</h3>
                 <p>Cadastrar e gerenciar lotes de recebimento</p>
+            </a>
+            <a href="{{ url_for('itens.home') }}" class="menu-card">
+                <i class="bx bx-box" style="color: #fd7e14;"></i>
+                <h3>Cadastro de Itens</h3>
+                <p>Gerenciar cadastro de itens do sistema</p>
             </a>
         </div>
     </div>
