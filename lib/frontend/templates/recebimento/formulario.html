@@ -277,20 +277,20 @@
             <!-- Formulário -->
             <div class="col-lg-5">
                 <div class="form-card">
-                    <h5 class="section-title" id="tituloFormulário">
+                    <h5 class="section-title" id="tituloFormulario">
                         <i class="bx bx-plus-circle"></i> Cadastrar Novo Lote
                     </h5>
 
                     <form id="formLote">
-                        <input type="hidden" id="loteIdEdição" value="">
+                        <input type="hidden" id="loteIdEdicao" value="">
 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="númeroLote" class="form-label">
+                                    <label for="numeroLote" class="form-label">
                                         Número do Lote <span class="campo-obrigatorio">*</span>
                                     </label>
-                                    <input type="text" class="form-control" id="númeroLote"
+                                    <input type="text" class="form-control" id="numeroLote"
                                            placeholder="Ex: LOTE001-2025" required>
                                 </div>
                             </div>
@@ -334,8 +334,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="númeroNotaFiscal" class="form-label">Número da Nota Fiscal</label>
-                            <input type="text" class="form-control" id="númeroNotaFiscal"
+                            <label for="numeroNotaFiscal" class="form-label">Número da Nota Fiscal</label>
+                            <input type="text" class="form-control" id="numeroNotaFiscal"
                                    placeholder="Ex: NF001234">
                         </div>
 
@@ -593,12 +593,12 @@
 
         function limparFormulário() {
             document.getElementById('formLote').reset();
-            document.getElementById('loteIdEdição').value = '';
-            document.getElementById('tituloFormulário').innerHTML = '<i class="bx bx-plus-circle"></i> Cadastrar Novo Lote';
+            document.getElementById('loteIdEdicao').value = '';
+            document.getElementById('tituloFormulario').innerHTML = '<i class="bx bx-plus-circle"></i> Cadastrar Novo Lote';
             document.getElementById('textoSalvar').textContent = 'Salvar';
             document.getElementById('btnCancelar').style.display = 'none';
 
-            document.getElementById('númeroLote').focus();
+            document.getElementById('numeroLote').focus();
         }
 
         function aplicarFiltros() {
@@ -607,9 +607,9 @@
             const filtroNF = document.getElementById('filtroNF').value.toLowerCase();
 
             lotesFiltrados = todosLotes.filter(lote => {
-                const matchLote = !filtroLote || (lote.número_lote || '').toLowerCase().includes(filtroLote);
+                const matchLote = !filtroLote || (lote.numero_lote || '').toLowerCase().includes(filtroLote);
                 const matchItem = !filtroItem || (lote.id_item || '').toLowerCase().includes(filtroItem);
-                const matchNF = !filtroNF || (lote.número_nota_fiscal || '').toLowerCase().includes(filtroNF);
+                const matchNF = !filtroNF || (lote.numero_nota_fiscal || '').toLowerCase().includes(filtroNF);
                 return matchLote && matchItem && matchNF;
             });
 
@@ -639,11 +639,11 @@
             lotesPagina.forEach(lote => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td title="${lote.número_lote}">${lote.número_lote}</td>
+                    <td title="${lote.numero_lote}">${lote.numero_lote}</td>
                     <td>${lote.id_item || '-'}</td>
                     <td>${formatarDataExibicao(lote.data_recebimento) || '-'}</td>
                     <td>${formatarDataExibicao(lote.data_validade) || '-'}</td>
-                    <td>${lote.número_nota_fiscal || '-'}</td>
+                    <td>${lote.numero_nota_fiscal || '-'}</td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary btn-acoes" onclick="editarLote(${lote.id})" title="Editar">
                             <i class="bx bx-edit"></i>
@@ -742,21 +742,21 @@
             e.preventDefault();
             mostrarLoading();
 
-            const loteIdEdição = document.getElementById('loteIdEdição').value;
+            const loteIdEdicao = document.getElementById('loteIdEdicao').value;
             const dados = {
-                número_lote: document.getElementById('númeroLote').value.trim(),
+                numero_lote: document.getElementById('numeroLote').value.trim(),
                 id_item: document.getElementById('idItem').value.trim(),
                 data_recebimento: document.getElementById('dataRecebimento').value,
                 data_fabricacao: document.getElementById('dataFabricacao').value,
                 data_validade: document.getElementById('dataValidade').value,
                 quantidade: document.getElementById('quantidade').value,
-                número_nota_fiscal: document.getElementById('númeroNotaFiscal').value.trim(),
+                numero_nota_fiscal: document.getElementById('numeroNotaFiscal').value.trim(),
                 observacao: document.getElementById('observacao').value.trim()
             };
 
             let url, method;
-            if (loteIdEdição) {
-                url = `/recebimento/api/lotes/${loteIdEdição}`;
+            if (loteIdEdicao) {
+                url = `/recebimento/api/lotes/${loteIdEdicao}`;
                 method = 'PUT';
             } else {
                 url = '/recebimento/api/lotes';
@@ -797,21 +797,21 @@
                         return;
                     }
 
-                    document.getElementById('loteIdEdição').value = lote.id;
-                    document.getElementById('númeroLote').value = lote.número_lote;
+                    document.getElementById('loteIdEdicao').value = lote.id;
+                    document.getElementById('numeroLote').value = lote.numero_lote;
                     document.getElementById('idItem').value = lote.id_item || '';
                     document.getElementById('dataRecebimento').value = lote.data_recebimento || '';
                     document.getElementById('dataFabricacao').value = lote.data_fabricacao || '';
                     document.getElementById('dataValidade').value = lote.data_validade || '';
                     document.getElementById('quantidade').value = lote.quantidade || '';
-                    document.getElementById('númeroNotaFiscal').value = lote.número_nota_fiscal || '';
+                    document.getElementById('numeroNotaFiscal').value = lote.numero_nota_fiscal || '';
                     document.getElementById('observacao').value = lote.observacao || '';
 
-                    document.getElementById('tituloFormulário').innerHTML = '<i class="bx bx-edit"></i> Editar Lote';
+                    document.getElementById('tituloFormulario').innerHTML = '<i class="bx bx-edit"></i> Editar Lote';
                     document.getElementById('textoSalvar').textContent = 'Atualizar';
                     document.getElementById('btnCancelar').style.display = 'inline-block';
 
-                    document.getElementById('númeroLote').focus();
+                    document.getElementById('numeroLote').focus();
                     mostrarNotificacao('Lote carregado para edição', 'success');
                 })
                 .catch(error => {
@@ -827,7 +827,7 @@
         function deletarLote(loteId) {
             // Buscar info do lote para mostrar no modal
             const lote = todosLotes.find(l => l.id === loteId);
-            const info = lote ? `Lote: ${lote.número_lote}` : '';
+            const info = lote ? `Lote: ${lote.numero_lote}` : '';
             document.getElementById('loteExclusãoInfo').textContent = info;
 
             loteIdParaExcluir = loteId;
@@ -872,12 +872,12 @@
         }
 
         function atualizarPreviewEtiqueta() {
-            const númeroLote = document.getElementById('númeroLote').value || 'Nao informado';
+            const numeroLote = document.getElementById('numeroLote').value || 'Nao informado';
             const dataRecebimento = document.getElementById('dataRecebimento').value;
             const dataValidade = document.getElementById('dataValidade').value;
-            const notaFiscal = document.getElementById('númeroNotaFiscal').value;
+            const notaFiscal = document.getElementById('numeroNotaFiscal').value;
 
-            let preview = `<strong>Lote:</strong> ${númeroLote}<br>`;
+            let preview = `<strong>Lote:</strong> ${numeroLote}<br>`;
             if (dataRecebimento) preview += `<strong>Recebimento:</strong> ${formatarDataExibicao(dataRecebimento)}<br>`;
             if (dataValidade) preview += `<strong>Validade:</strong> ${formatarDataExibicao(dataValidade)}<br>`;
             if (notaFiscal) preview += `<strong>NF:</strong> ${notaFiscal}`;
@@ -886,9 +886,9 @@
         }
 
         function gerarEtiqueta(imprimir = false) {
-            const númeroLote = document.getElementById('númeroLote').value;
+            const numeroLote = document.getElementById('numeroLote').value;
 
-            if (!númeroLote) {
+            if (!numeroLote) {
                 mostrarNotificacao('Preencha o número do lote', 'error');
                 return;
             }
@@ -896,14 +896,14 @@
             mostrarLoading();
 
             const dadosEtiqueta = {
-                número_lote: númeroLote,
+                numero_lote: numeroLote,
                 id_item: document.getElementById('idItem').value,
                 data_recebimento: formatarDataApi(document.getElementById('dataRecebimento').value),
                 data_fabricacao: formatarDataApi(document.getElementById('dataFabricacao').value),
                 data_validade: formatarDataApi(document.getElementById('dataValidade').value),
                 quantidade: document.getElementById('quantidade').value,
                 observacao: document.getElementById('observacao').value,
-                número_nota_fiscal: document.getElementById('númeroNotaFiscal').value,
+                numero_nota_fiscal: document.getElementById('numeroNotaFiscal').value,
                 largura: document.getElementById('larguraEtiqueta').value || 100,
                 altura: document.getElementById('alturaEtiqueta').value || 75,
                 tamanho_fonte: document.getElementById('tamanhoFonte').value || 8,
@@ -933,7 +933,7 @@
                     // Baixar arquivo
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = `etiqueta_${númeroLote}_${new Date().toISOString().split('T')[0]}.pdf`;
+                    link.download = `etiqueta_${numeroLote}_${new Date().toISOString().split('T')[0]}.pdf`;
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
@@ -961,13 +961,13 @@
                         return;
                     }
 
-                    document.getElementById('númeroLote').value = lote.número_lote;
+                    document.getElementById('numeroLote').value = lote.numero_lote;
                     document.getElementById('idItem').value = lote.id_item || '';
                     document.getElementById('dataRecebimento').value = lote.data_recebimento || '';
                     document.getElementById('dataFabricacao').value = lote.data_fabricacao || '';
                     document.getElementById('dataValidade').value = lote.data_validade || '';
                     document.getElementById('quantidade').value = lote.quantidade || '';
-                    document.getElementById('númeroNotaFiscal').value = lote.número_nota_fiscal || '';
+                    document.getElementById('numeroNotaFiscal').value = lote.numero_nota_fiscal || '';
                     document.getElementById('observacao').value = lote.observacao || '';
 
                     esconderLoading();
@@ -992,14 +992,14 @@
                     }
 
                     const dadosEtiqueta = {
-                        número_lote: lote.número_lote,
+                        numero_lote: lote.numero_lote,
                         id_item: lote.id_item || '',
                         data_recebimento: formatarDataApi(lote.data_recebimento || ''),
                         data_fabricacao: formatarDataApi(lote.data_fabricacao || ''),
                         data_validade: formatarDataApi(lote.data_validade || ''),
                         quantidade: lote.quantidade || '',
                         observacao: lote.observacao || '',
-                        número_nota_fiscal: lote.número_nota_fiscal || '',
+                        numero_nota_fiscal: lote.numero_nota_fiscal || '',
                         largura: 100,
                         altura: 75,
                         tamanho_fonte: 8,
@@ -1046,10 +1046,10 @@
         // Inicializar
         document.addEventListener('DOMContentLoaded', function() {
             consultarLotes();
-            document.getElementById('númeroLote').focus();
+            document.getElementById('numeroLote').focus();
 
             // Atualizar preview
-            ['númeroLote', 'dataRecebimento', 'dataValidade', 'númeroNotaFiscal'].forEach(id => {
+            ['numeroLote', 'dataRecebimento', 'dataValidade', 'numeroNotaFiscal'].forEach(id => {
                 document.getElementById(id).addEventListener('input', atualizarPreviewEtiqueta);
             });
         });
