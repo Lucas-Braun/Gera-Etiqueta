@@ -31,7 +31,191 @@
       "cnpj": "60.881.229/0004-05",
       "dun": "20719",
       "dt_criacao": "2026-01-14"
+    },
+    {
+      "id": 8,
+      "numero": 18392,
+      "descricao": "DESINF. BIO-KRISS FLORAL 3X5LT (BC)",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "27898462402558",
+      "dt_criacao": "2026-01-16"
+    },
+    {
+      "id": 9,
+      "numero": 5204,
+      "descricao": "WILLY LAVA LOUCAS NEUTRO 2X5 L",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "17898462407563",
+      "dt_criacao": "2026-01-16"
+    },
+    {
+      "id": 10,
+      "numero": 18396,
+      "descricao": "BIO-KRISS AGUA SANITARIA 3X5 LT (LCT)",
+      "peso": "",
+      "validade_meses": 6,
+      "cnpj": "",
+      "dun": "17898462401141",
+      "dt_criacao": "2026-01-16"
+    },
+    {
+      "id": 11,
+      "numero": 8399,
+      "descricao": "BIO-KRISS SABONETE LIQ. PEROLADO 3X5LT (BC)",
+      "peso": "",
+      "validade_meses": 36,
+      "cnpj": "",
+      "dun": "178994494997690",
+      "dt_criacao": "2026-01-17"
+    },
+    {
+      "id": 12,
+      "numero": 8407,
+      "descricao": "BIO-KRISS SABONETE LIQUIDO ERVA DOCE 3X5LT (BC)",
+      "peso": "",
+      "validade_meses": 36,
+      "cnpj": "",
+      "dun": "17899449497683",
+      "dt_criacao": "2026-01-17",
+      "dt_atualizacao": "2026-01-17"
+    },
+    {
+      "id": 13,
+      "numero": 18395,
+      "descricao": "BIO-KRISS LAVA LOUCAS NEUTRO 3X5LT",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "37898462402593",
+      "dt_criacao": "2026-01-20",
+      "dt_atualizacao": "2026-01-21"
+    },
+    {
+      "id": 14,
+      "numero": 21187,
+      "descricao": "MARINE GEL BARBAREX 2X5",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "17899449494255",
+      "dt_criacao": "2026-01-21"
+    },
+    {
+      "id": 15,
+      "numero": 20669,
+      "descricao": "CLORO DESINF. LIQ. 05% BIO-KRISS 3X5 L",
+      "peso": "",
+      "validade_meses": 6,
+      "cnpj": "",
+      "dun": "17898462401141",
+      "dt_criacao": "2026-01-20"
+    },
+    {
+      "id": 16,
+      "numero": 18404,
+      "descricao": "DESINF. BIO-KRISS LAVANDA 3X5LT",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "27899449494542",
+      "dt_criacao": "2026-01-20"
+    },
+    {
+      "id": 17,
+      "numero": 8396,
+      "descricao": "BIO-KRISS AGUA SANITARIA 3X5 LT (LCT)",
+      "peso": "",
+      "validade_meses": 6,
+      "cnpj": "",
+      "dun": "17898462401141",
+      "dt_criacao": "2026-01-21"
+    },
+    {
+      "id": 18,
+      "numero": 8405,
+      "descricao": "DESINF. BIO-KRISS MARINE 3X5 LT (BC)",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "27899449494535",
+      "dt_criacao": "2026-01-21"
+    },
+    {
+      "id": 19,
+      "numero": 8393,
+      "descricao": "BIO-KRISS DESINFETANTE EUCALIPTO 3X5 LT",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "27899449498755",
+      "dt_criacao": "2026-01-21"
+    },
+    {
+      "id": 20,
+      "numero": 5212,
+      "descricao": "WILLY LAVA LOUÇAS CLEAR 2X5 LT",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "17899449499663",
+      "dt_criacao": "2026-01-21"
+    },
+    {
+      "id": 21,
+      "numero": 19841,
+      "descricao": "ALCOOL +BICARBONATO LAVANDA BARBAREX 12X1 LT",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "17899449494453",
+      "dt_criacao": "2026-01-21"
+    },
+    {
+      "id": 22,
+      "numero": 17022,
+      "descricao": "DESINF. BARB  DAMA DA NOITE 6X2 LT",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "17899449495016",
+      "dt_criacao": "2026-01-21",
+      "dt_atualizacao": "2026-01-21"
+    },
+    {
+      "id": 23,
+      "numero": 18393,
+      "descricao": "BIO KRISS DESINF. EUCALIPTO 3X5 LT",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "27899449498755",
+      "dt_criacao": "2026-01-21"
+    },
+    {
+      "id": 24,
+      "numero": 18394,
+      "descricao": "BIO-KRISS LIMPA PISO 3X5 LT (LCT)",
+      "peso": "",
+      "validade_meses": null,
+      "cnpj": "",
+      "dun": "27899449499585",
+      "dt_criacao": "2026-01-21",
+      "dt_atualizacao": "2026-01-21"
+    },
+    {
+      "id": 25,
+      "numero": 180,
+      "descricao": "ALVEJANTE S/CLORO BARB. 12X1 LT",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "17898462409055",
+      "dt_criacao": "2026-01-22"
     }
   ],
-  "ultimo_id": 7
+  "ultimo_id": 25
 }
