@@ -320,6 +320,15 @@ def api_gerar_etiqueta():
                 c.drawString(nf_x, y, nf_texto)
                 y -= line_height
 
+            # Quantidade
+            quantidade_prod = dados.get('quantidade', '')
+            if quantidade_prod:
+                qtd_texto = f"Quantidade: {quantidade_prod}"
+                qtd_largura = c.stringWidth(qtd_texto, "Helvetica", tamanho_fonte)
+                qtd_x = (largura - qtd_largura) / 2
+                c.drawString(qtd_x, y, qtd_texto)
+                y -= line_height
+
             # Observacao
             observacao = dados.get('observacao', '')
             if observacao and len(observacao) > 0 and y > (y_margin + line_height * 3):
