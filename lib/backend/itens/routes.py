@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, render_template, request, jsonify
 
-from lib.backend.itens_service import (
+from lib.backend.itens.service import (
     listar_itens,
     buscar_item_por_id,
     buscar_item_por_numero,

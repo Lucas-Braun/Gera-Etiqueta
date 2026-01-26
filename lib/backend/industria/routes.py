@@ -6,7 +6,7 @@ import base64
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-from lib.backend.data_service import (
+from lib.backend.industria.service import (
     listar_produtos,
     buscar_produto_por_id,
     buscar_produto_por_numero,

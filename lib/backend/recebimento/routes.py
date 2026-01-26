@@ -7,7 +7,7 @@ from PIL import Image
 import random
 import string
 
-from lib.backend.lotes_service import (
+from lib.backend.recebimento.service import (
     listar_lotes,
     buscar_lote_por_id,
     criar_lote,

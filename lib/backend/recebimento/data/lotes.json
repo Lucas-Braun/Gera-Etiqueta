@@ -1,0 +1,18 @@
+{
+  "lotes": [
+    {
+      "id": 12,
+      "numero_lote": "02425TQ",
+      "id_item": "365",
+      "data_recebimento": "2026-01-26",
+      "data_fabricacao": "2025-12-09",
+      "data_validade": "2027-12-09",
+      "quantidade": 200.0,
+      "numero_nota_fiscal": "47966",
+      "observacao": null,
+      "dt_cadastro": "2026-01-26 16:32:01",
+      "dt_atualizacao": "2026-01-26 16:36:45"
+    }
+  ],
+  "ultimo_id": 12
+}

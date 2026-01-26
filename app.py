@@ -10,9 +10,9 @@ app = Flask(__name__,
 app.secret_key = 'etiqueta-sistema-2025-chave-secreta'
 
 # Registrar blueprints
-from lib.backend.routes.etiqueta import etiqueta_bp
-from lib.backend.routes.recebimento import recebimento_bp
-from lib.backend.routes.itens import itens_bp
+from lib.backend.industria.routes import etiqueta_bp
+from lib.backend.recebimento.routes import recebimento_bp
+from lib.backend.itens.routes import itens_bp
 app.register_blueprint(etiqueta_bp)
 app.register_blueprint(recebimento_bp)
 app.register_blueprint(itens_bp)
