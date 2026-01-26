@@ -1,41 +1,4 @@
 {
-  "lotes": [
-    {
-      "id": 1,
-      "numero_lote": "2TESTE-123",
-      "data_recebimento": "2026-01-15",
-      "data_fabricacao": "2026-01-15",
-      "data_validade": "2026-01-15",
-      "quantidade": 110.0,
-      "numero_nota_fiscal": "12345",
-      "observacao": null,
-      "dt_cadastro": "2026-01-15 13:20:07",
-      "dt_atualizacao": "2026-01-15 13:26:15"
-    },
-    {
-      "id": 2,
-      "numero_lote": "20",
-      "data_recebimento": "2026-01-26",
-      "data_fabricacao": "2025-02-15",
-      "data_validade": "2027-02-15",
-      "quantidade": 10.0,
-      "numero_nota_fiscal": "450",
-      "observacao": null,
-      "dt_cadastro": "2026-01-26 11:47:49"
-    },
-    {
-      "id": 3,
-      "numero_lote": "LOTE001",
-      "id_item": "123",
-      "data_recebimento": null,
-      "data_fabricacao": "2026-01-01",
-      "data_validade": "2026-01-26",
-      "quantidade": 10.0,
-      "numero_nota_fiscal": "450",
-      "observacao": null,
-      "dt_cadastro": "2026-01-26 12:15:36",
-      "dt_atualizacao": "2026-01-26 12:15:56"
-    }
-  ],
+  "lotes": [],
   "ultimo_id": 3
 }

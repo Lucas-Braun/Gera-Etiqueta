@@ -183,6 +183,8 @@ def api_gerar_etiqueta():
         largura_mm = float(dados.get('largura', 100))
         altura_mm = float(dados.get('altura', 75))
         tamanho_fonte_base = int(dados.get('tamanho_fonte', 8))
+        quantidade_etiquetas = int(dados.get('quantidade_etiquetas', 1))
+        quantidade_etiquetas = max(1, min(100, quantidade_etiquetas))  # Limitar entre 1 e 100
 
         # Converter mm para pontos
         largura = largura_mm * mm
@@ -262,130 +264,136 @@ def api_gerar_etiqueta():
         qr.make(fit=True)
         qr_img = qr.make_image(fill_color="black", back_color="white")
 
-        texto_largura = area_util_largura
-        y = y_start
+        # Loop para gerar multiplas etiquetas
+        for etiqueta_num in range(quantidade_etiquetas):
+            texto_largura = area_util_largura
+            y = y_start
 
-        # TITULO PRINCIPAL
-        c.setFont("Helvetica-Bold", titulo_fonte)
-        titulo = "CONTROLE DE LOTE"
-        titulo_largura = c.stringWidth(titulo, "Helvetica-Bold", titulo_fonte)
-        titulo_x = (largura - titulo_largura) / 2
-        c.drawString(titulo_x, y, titulo)
-        y -= titulo_fonte * 1.0
+            # TITULO PRINCIPAL
+            c.setFont("Helvetica-Bold", titulo_fonte)
+            titulo = "CONTROLE DE LOTE"
+            titulo_largura = c.stringWidth(titulo, "Helvetica-Bold", titulo_fonte)
+            titulo_x = (largura - titulo_largura) / 2
+            c.drawString(titulo_x, y, titulo)
+            y -= titulo_fonte * 1.0
 
-        # NUMERO DO LOTE
-        if numero_lote:
-            c.setFont("Helvetica-Bold", lote_fonte)
-            lote_texto = f"LOTE: {numero_lote}"
-            lote_largura = c.stringWidth(lote_texto, "Helvetica-Bold", lote_fonte)
-            lote_x = (largura - lote_largura) / 2
-            c.drawString(lote_x, y, lote_texto)
-            y -= line_height * 1.0
+            # NUMERO DO LOTE
+            if numero_lote:
+                c.setFont("Helvetica-Bold", lote_fonte)
+                lote_texto = f"LOTE: {numero_lote}"
+                lote_largura = c.stringWidth(lote_texto, "Helvetica-Bold", lote_fonte)
+                lote_x = (largura - lote_largura) / 2
+                c.drawString(lote_x, y, lote_texto)
+                y -= line_height * 1.0
 
-        # ID DO ITEM
-        id_item = dados.get('id_item', '')
-        if id_item:
-            c.setFont("Helvetica-Bold", tamanho_fonte)
-            item_texto = f"ID Item: {id_item}"
-            item_largura = c.stringWidth(item_texto, "Helvetica-Bold", tamanho_fonte)
-            item_x = (largura - item_largura) / 2
-            c.drawString(item_x, y, item_texto)
-            y -= line_height
+            # ID DO ITEM
+            id_item = dados.get('id_item', '')
+            if id_item:
+                c.setFont("Helvetica-Bold", tamanho_fonte)
+                item_texto = f"ID Item: {id_item}"
+                item_largura = c.stringWidth(item_texto, "Helvetica-Bold", tamanho_fonte)
+                item_x = (largura - item_largura) / 2
+                c.drawString(item_x, y, item_texto)
+                y -= line_height
 
-        # INFORMACOES
-        c.setFont("Helvetica", tamanho_fonte)
-
-        data_recebimento = dados.get('data_recebimento', '')
-        data_fabricacao = dados.get('data_fabricacao', '')
-        data_validade = dados.get('data_validade', '')
-
-        if data_recebimento:
-            rec_texto = f"Recebimento: {data_recebimento}"
-            rec_largura = c.stringWidth(rec_texto, "Helvetica", tamanho_fonte)
-            rec_x = (largura - rec_largura) / 2
-            c.drawString(rec_x, y, rec_texto)
-            y -= line_height
-
-        if data_fabricacao:
-            fab_texto = f"Fabricacao: {data_fabricacao}"
-            fab_largura = c.stringWidth(fab_texto, "Helvetica", tamanho_fonte)
-            fab_x = (largura - fab_largura) / 2
-            c.drawString(fab_x, y, fab_texto)
-            y -= line_height
-
-        if data_validade:
-            c.setFont("Helvetica-Bold", tamanho_fonte)
-            val_texto = f"Validade: {data_validade}"
-            val_largura = c.stringWidth(val_texto, "Helvetica-Bold", tamanho_fonte)
-            val_x = (largura - val_largura) / 2
-            c.drawString(val_x, y, val_texto)
+            # INFORMACOES
             c.setFont("Helvetica", tamanho_fonte)
-            y -= line_height
 
-        # Nota Fiscal
-        numero_nota_fiscal = dados.get('numero_nota_fiscal', '')
-        if numero_nota_fiscal:
-            nf_texto = f"Nota Fiscal: {numero_nota_fiscal}"
-            nf_largura = c.stringWidth(nf_texto, "Helvetica", tamanho_fonte)
-            nf_x = (largura - nf_largura) / 2
-            c.drawString(nf_x, y, nf_texto)
-            y -= line_height
+            data_recebimento = dados.get('data_recebimento', '')
+            data_fabricacao = dados.get('data_fabricacao', '')
+            data_validade = dados.get('data_validade', '')
 
-        # Observacao
-        observacao = dados.get('observacao', '')
-        if observacao and len(observacao) > 0 and y > (y_margin + line_height * 3):
-            y -= section_space * 0.5
-            obs_fonte = max(3, tamanho_fonte - 1)
-            c.setFont("Helvetica", obs_fonte)
-            obs_max = max(30, int(texto_largura / (obs_fonte * 0.5)))
-            obs_texto = observacao[:obs_max] + "..." if len(observacao) > obs_max else observacao
-            obs_completo = f"Obs: {obs_texto}"
-            obs_largura = c.stringWidth(obs_completo, "Helvetica", obs_fonte)
-            obs_x = (largura - obs_largura) / 2
-            c.drawString(obs_x, y, obs_completo)
-            y -= line_height * 1.2
+            if data_recebimento:
+                rec_texto = f"Recebimento: {data_recebimento}"
+                rec_largura = c.stringWidth(rec_texto, "Helvetica", tamanho_fonte)
+                rec_x = (largura - rec_largura) / 2
+                c.drawString(rec_x, y, rec_texto)
+                y -= line_height
 
-        # QR CODE
-        rodape_altura = rodape_fonte + (2 * y_margin)
-        area_qr_inicio = y_margin + rodape_altura + (3 * mm)
-        area_qr_fim = y - (2 * mm)
-        area_qr_altura = area_qr_fim - area_qr_inicio
+            if data_fabricacao:
+                fab_texto = f"Fabricacao: {data_fabricacao}"
+                fab_largura = c.stringWidth(fab_texto, "Helvetica", tamanho_fonte)
+                fab_x = (largura - fab_largura) / 2
+                c.drawString(fab_x, y, fab_texto)
+                y -= line_height
 
-        if largura <= 60 * mm or altura <= 50 * mm:
-            qr_size_largura = largura * 0.25
-            qr_size_altura = area_qr_altura * 0.60
-        elif largura <= 90 * mm or altura <= 70 * mm:
-            qr_size_largura = largura * 0.30
-            qr_size_altura = area_qr_altura * 0.70
-        else:
-            qr_size_largura = largura * 0.35
-            qr_size_altura = area_qr_altura * 0.85
+            if data_validade:
+                c.setFont("Helvetica-Bold", tamanho_fonte)
+                val_texto = f"Validade: {data_validade}"
+                val_largura = c.stringWidth(val_texto, "Helvetica-Bold", tamanho_fonte)
+                val_x = (largura - val_largura) / 2
+                c.drawString(val_x, y, val_texto)
+                c.setFont("Helvetica", tamanho_fonte)
+                y -= line_height
 
-        qr_size = min(qr_size_largura, qr_size_altura)
+            # Nota Fiscal
+            numero_nota_fiscal = dados.get('numero_nota_fiscal', '')
+            if numero_nota_fiscal:
+                nf_texto = f"Nota Fiscal: {numero_nota_fiscal}"
+                nf_largura = c.stringWidth(nf_texto, "Helvetica", tamanho_fonte)
+                nf_x = (largura - nf_largura) / 2
+                c.drawString(nf_x, y, nf_texto)
+                y -= line_height
 
-        if largura <= 60 * mm or altura <= 50 * mm:
-            qr_size = max(8 * mm, min(qr_size, 18 * mm))
-        elif largura <= 90 * mm or altura <= 70 * mm:
-            qr_size = max(10 * mm, min(qr_size, 25 * mm))
-        else:
-            qr_size = max(12 * mm, min(qr_size, 40 * mm))
+            # Observacao
+            observacao = dados.get('observacao', '')
+            if observacao and len(observacao) > 0 and y > (y_margin + line_height * 3):
+                y -= section_space * 0.5
+                obs_fonte = max(3, tamanho_fonte - 1)
+                c.setFont("Helvetica", obs_fonte)
+                obs_max = max(30, int(texto_largura / (obs_fonte * 0.5)))
+                obs_texto = observacao[:obs_max] + "..." if len(observacao) > obs_max else observacao
+                obs_completo = f"Obs: {obs_texto}"
+                obs_largura = c.stringWidth(obs_completo, "Helvetica", obs_fonte)
+                obs_x = (largura - obs_largura) / 2
+                c.drawString(obs_x, y, obs_completo)
+                y -= line_height * 1.2
 
-        qr_x = (largura - qr_size) / 2
-        qr_y = area_qr_inicio + ((area_qr_altura - qr_size) / 2)
+            # QR CODE
+            rodape_altura = rodape_fonte + (2 * y_margin)
+            area_qr_inicio = y_margin + rodape_altura + (3 * mm)
+            area_qr_fim = y - (2 * mm)
+            area_qr_altura = area_qr_fim - area_qr_inicio
 
-        c.drawInlineImage(qr_img, qr_x, qr_y, qr_size, qr_size)
+            if largura <= 60 * mm or altura <= 50 * mm:
+                qr_size_largura = largura * 0.25
+                qr_size_altura = area_qr_altura * 0.60
+            elif largura <= 90 * mm or altura <= 70 * mm:
+                qr_size_largura = largura * 0.30
+                qr_size_altura = area_qr_altura * 0.70
+            else:
+                qr_size_largura = largura * 0.35
+                qr_size_altura = area_qr_altura * 0.85
 
-        # RODAPE
-        agora_brasilia = datetime.now() - timedelta(hours=3)
-        data_geracao = agora_brasilia.strftime('%d/%m/%Y %H:%M')
+            qr_size = min(qr_size_largura, qr_size_altura)
 
-        rodape_y = y_margin + rodape_fonte
+            if largura <= 60 * mm or altura <= 50 * mm:
+                qr_size = max(8 * mm, min(qr_size, 18 * mm))
+            elif largura <= 90 * mm or altura <= 70 * mm:
+                qr_size = max(10 * mm, min(qr_size, 25 * mm))
+            else:
+                qr_size = max(12 * mm, min(qr_size, 40 * mm))
 
-        c.setFont("Helvetica", rodape_fonte)
-        rodape_texto = f"QR: {codigo_qr}  |  Gerado: {data_geracao}"
-        rodape_largura = c.stringWidth(rodape_texto, "Helvetica", rodape_fonte)
-        rodape_x = (largura - rodape_largura) / 2
-        c.drawString(rodape_x, rodape_y, rodape_texto)
+            qr_x = (largura - qr_size) / 2
+            qr_y = area_qr_inicio + ((area_qr_altura - qr_size) / 2)
+
+            c.drawInlineImage(qr_img, qr_x, qr_y, qr_size, qr_size)
+
+            # RODAPE
+            agora_brasilia = datetime.now() - timedelta(hours=3)
+            data_geracao = agora_brasilia.strftime('%d/%m/%Y %H:%M')
+
+            rodape_y = y_margin + rodape_fonte
+
+            c.setFont("Helvetica", rodape_fonte)
+            rodape_texto = f"QR: {codigo_qr}  |  Gerado: {data_geracao}"
+            rodape_largura = c.stringWidth(rodape_texto, "Helvetica", rodape_fonte)
+            rodape_x = (largura - rodape_largura) / 2
+            c.drawString(rodape_x, rodape_y, rodape_texto)
+
+            # Criar nova pagina se nao for a ultima etiqueta
+            if etiqueta_num < quantidade_etiquetas - 1:
+                c.showPage()
 
         # Finalizar
         c.save()

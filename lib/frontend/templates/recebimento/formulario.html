@@ -326,9 +326,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Tamanho da Fonte (pt)</label>
-                        <input type="number" class="form-control" id="tamanhoFonte" value="8">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label">Tamanho da Fonte (pt)</label>
+                                <input type="number" class="form-control" id="tamanhoFonte" value="8">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label">Quantidade de Etiquetas</label>
+                                <input type="number" class="form-control" id="quantidadeEtiquetas" value="1" min="1" max="100">
+                            </div>
+                        </div>
                     </div>
                     <div class="alert alert-secondary" id="previewEtiqueta">
                         Preencha o formulario para visualizar
@@ -602,7 +612,8 @@
                 numero_nota_fiscal: document.getElementById('numeroNotaFiscal').value,
                 largura: document.getElementById('larguraEtiqueta').value || 100,
                 altura: document.getElementById('alturaEtiqueta').value || 75,
-                tamanho_fonte: document.getElementById('tamanhoFonte').value || 8
+                tamanho_fonte: document.getElementById('tamanhoFonte').value || 8,
+                quantidade_etiquetas: document.getElementById('quantidadeEtiquetas').value || 1
             };
 
             fetch('/recebimento/api/gerar-etiqueta', {
