@@ -278,8 +278,24 @@
                         </button>
                     </div>
 
+                    <!-- Filtros -->
+                    <div class="row mb-3">
+                        <div class="col-4">
+                            <input type="text" class="form-control form-control-sm" id="filtroLote"
+                                   placeholder="Filtrar Lote" onkeyup="aplicarFiltros()">
+                        </div>
+                        <div class="col-4">
+                            <input type="text" class="form-control form-control-sm" id="filtroItem"
+                                   placeholder="Filtrar ID Item" onkeyup="aplicarFiltros()">
+                        </div>
+                        <div class="col-4">
+                            <input type="text" class="form-control form-control-sm" id="filtroNF"
+                                   placeholder="Filtrar NF" onkeyup="aplicarFiltros()">
+                        </div>
+                    </div>
+
                     <div class="alert alert-info py-2">
-                        <strong>Total:</strong> <span id="totalRegistros">0</span> lotes
+                        <strong>Mostrando:</strong> <span id="registrosMostrados">0</span> de <span id="totalRegistros">0</span> lotes
                     </div>
 
                     <div class="table-container">
@@ -298,6 +314,12 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Paginacao -->
+                    <nav class="mt-3">
+                        <ul class="pagination pagination-sm justify-content-center mb-0" id="paginacao">
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
@@ -397,6 +419,12 @@
             return `${partes[2]}/${partes[1]}/${partes[0]}`;
         }
 
+        // Variaveis globais para paginacao e filtros
+        let todosLotes = [];
+        let lotesFiltrados = [];
+        let paginaAtual = 1;
+        const registrosPorPagina = 10;
+
         function limparFormulario() {
             document.getElementById('formLote').reset();
             document.getElementById('loteIdEdicao').value = '';
@@ -405,6 +433,116 @@
             document.getElementById('btnCancelar').style.display = 'none';
 
             document.getElementById('numeroLote').focus();
+        }
+
+        function aplicarFiltros() {
+            const filtroLote = document.getElementById('filtroLote').value.toLowerCase();
+            const filtroItem = document.getElementById('filtroItem').value.toLowerCase();
+            const filtroNF = document.getElementById('filtroNF').value.toLowerCase();
+
+            lotesFiltrados = todosLotes.filter(lote => {
+                const matchLote = !filtroLote || (lote.numero_lote || '').toLowerCase().includes(filtroLote);
+                const matchItem = !filtroItem || (lote.id_item || '').toLowerCase().includes(filtroItem);
+                const matchNF = !filtroNF || (lote.numero_nota_fiscal || '').toLowerCase().includes(filtroNF);
+                return matchLote && matchItem && matchNF;
+            });
+
+            paginaAtual = 1;
+            renderizarTabela();
+        }
+
+        function renderizarTabela() {
+            const tbody = document.getElementById('tabelaLotes');
+            tbody.innerHTML = '';
+
+            document.getElementById('totalRegistros').textContent = todosLotes.length;
+
+            if (lotesFiltrados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">Nenhum lote encontrado</td></tr>';
+                document.getElementById('registrosMostrados').textContent = '0';
+                document.getElementById('paginacao').innerHTML = '';
+                return;
+            }
+
+            const inicio = (paginaAtual - 1) * registrosPorPagina;
+            const fim = Math.min(inicio + registrosPorPagina, lotesFiltrados.length);
+            const lotesPagina = lotesFiltrados.slice(inicio, fim);
+
+            document.getElementById('registrosMostrados').textContent = `${inicio + 1}-${fim}`;
+
+            lotesPagina.forEach(lote => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td title="${lote.numero_lote}">${lote.numero_lote}</td>
+                    <td>${lote.id_item || '-'}</td>
+                    <td>${formatarDataExibicao(lote.data_recebimento) || '-'}</td>
+                    <td>${formatarDataExibicao(lote.data_validade) || '-'}</td>
+                    <td>${lote.numero_nota_fiscal || '-'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary btn-acoes" onclick="editarLote(${lote.id})" title="Editar">
+                            <i class="bx bx-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning btn-acoes" onclick="gerarEtiquetaLote(${lote.id})" title="Etiqueta">
+                            <i class="bx bx-barcode"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger btn-acoes" onclick="deletarLote(${lote.id})" title="Excluir">
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            renderizarPaginacao();
+        }
+
+        function renderizarPaginacao() {
+            const totalPaginas = Math.ceil(lotesFiltrados.length / registrosPorPagina);
+            const paginacao = document.getElementById('paginacao');
+            paginacao.innerHTML = '';
+
+            if (totalPaginas <= 1) return;
+
+            // Botao anterior
+            const liAnterior = document.createElement('li');
+            liAnterior.className = 'page-item' + (paginaAtual === 1 ? ' disabled' : '');
+            liAnterior.innerHTML = `<a class="page-link" href="#" onclick="irParaPagina(${paginaAtual - 1}); return false;">&laquo;</a>`;
+            paginacao.appendChild(liAnterior);
+
+            // Paginas
+            for (let i = 1; i <= totalPaginas; i++) {
+                if (totalPaginas > 7) {
+                    if (i === 1 || i === totalPaginas || (i >= paginaAtual - 1 && i <= paginaAtual + 1)) {
+                        const li = document.createElement('li');
+                        li.className = 'page-item' + (i === paginaAtual ? ' active' : '');
+                        li.innerHTML = `<a class="page-link" href="#" onclick="irParaPagina(${i}); return false;">${i}</a>`;
+                        paginacao.appendChild(li);
+                    } else if (i === 2 || i === totalPaginas - 1) {
+                        const li = document.createElement('li');
+                        li.className = 'page-item disabled';
+                        li.innerHTML = `<span class="page-link">...</span>`;
+                        paginacao.appendChild(li);
+                    }
+                } else {
+                    const li = document.createElement('li');
+                    li.className = 'page-item' + (i === paginaAtual ? ' active' : '');
+                    li.innerHTML = `<a class="page-link" href="#" onclick="irParaPagina(${i}); return false;">${i}</a>`;
+                    paginacao.appendChild(li);
+                }
+            }
+
+            // Botao proximo
+            const liProximo = document.createElement('li');
+            liProximo.className = 'page-item' + (paginaAtual === totalPaginas ? ' disabled' : '');
+            liProximo.innerHTML = `<a class="page-link" href="#" onclick="irParaPagina(${paginaAtual + 1}); return false;">&raquo;</a>`;
+            paginacao.appendChild(liProximo);
+        }
+
+        function irParaPagina(pagina) {
+            const totalPaginas = Math.ceil(lotesFiltrados.length / registrosPorPagina);
+            if (pagina < 1 || pagina > totalPaginas) return;
+            paginaAtual = pagina;
+            renderizarTabela();
         }
 
         function consultarLotes() {
@@ -418,38 +556,10 @@
                         return;
                     }
 
-                    document.getElementById('totalRegistros').textContent = result.total_registros;
-
-                    const tbody = document.getElementById('tabelaLotes');
-                    tbody.innerHTML = '';
-
-                    if (result.dados.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="6" class="text-center">Nenhum lote cadastrado</td></tr>';
-                        return;
-                    }
-
-                    result.dados.forEach(lote => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td title="${lote.numero_lote}">${lote.numero_lote}</td>
-                            <td>${lote.id_item || '-'}</td>
-                            <td>${formatarDataExibicao(lote.data_recebimento) || '-'}</td>
-                            <td>${formatarDataExibicao(lote.data_validade) || '-'}</td>
-                            <td>${lote.numero_nota_fiscal || '-'}</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary btn-acoes" onclick="editarLote(${lote.id})" title="Editar">
-                                    <i class="bx bx-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-warning btn-acoes" onclick="gerarEtiquetaLote(${lote.id})" title="Etiqueta">
-                                    <i class="bx bx-barcode"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger btn-acoes" onclick="deletarLote(${lote.id})" title="Excluir">
-                                    <i class="bx bx-trash"></i>
-                                </button>
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
+                    todosLotes = result.dados;
+                    lotesFiltrados = [...todosLotes];
+                    paginaAtual = 1;
+                    renderizarTabela();
                 })
                 .catch(error => {
                     mostrarNotificacao('Erro ao carregar lotes: ' + error.message, 'error');
