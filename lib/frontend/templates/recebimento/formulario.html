@@ -466,8 +466,11 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="gerarEtiqueta()">
-                        <i class="bx bx-download"></i> Gerar PDF
+                    <button type="button" class="btn btn-outline-primary" onclick="gerarEtiqueta(false)">
+                        <i class="bx bx-download"></i> Baixar PDF
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="gerarEtiqueta(true)">
+                        <i class="bx bx-printer"></i> Imprimir
                     </button>
                 </div>
             </div>
@@ -836,7 +839,7 @@
             document.getElementById('previewEtiqueta').innerHTML = preview;
         }
 
-        function gerarEtiqueta() {
+        function gerarEtiqueta(imprimir = false) {
             const numeroLote = document.getElementById('numeroLote').value;
 
             if (!numeroLote) {
@@ -872,16 +875,26 @@
             })
             .then(blob => {
                 const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `etiqueta_${numeroLote}_${new Date().toISOString().split('T')[0]}.pdf`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
+
+                if (imprimir) {
+                    // Abrir em nova aba e imprimir
+                    const printWindow = window.open(url, '_blank');
+                    printWindow.onload = function() {
+                        printWindow.print();
+                    };
+                    mostrarNotificacao('Abrindo impressao...', 'success');
+                } else {
+                    // Baixar arquivo
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `etiqueta_${numeroLote}_${new Date().toISOString().split('T')[0]}.pdf`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    mostrarNotificacao('Etiqueta baixada com sucesso!', 'success');
+                }
 
                 bootstrap.Modal.getInstance(document.getElementById('modalEtiqueta')).hide();
-                mostrarNotificacao('Etiqueta gerada com sucesso!', 'success');
             })
             .catch(error => {
                 mostrarNotificacao('Erro: ' + error.message, 'error');
