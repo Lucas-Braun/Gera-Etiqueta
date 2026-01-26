@@ -620,8 +620,11 @@
                         <button class="btn btn-sm btn-outline-primary btn-acoes" onclick="editarLote(${lote.id})" title="Editar">
                             <i class="bx bx-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-warning btn-acoes" onclick="gerarEtiquetaLote(${lote.id})" title="Etiqueta">
-                            <i class="bx bx-barcode"></i>
+                        <button class="btn btn-sm btn-outline-success btn-acoes" onclick="gerarEtiquetaLoteDireto(${lote.id}, false)" title="Baixar PDF">
+                            <i class="bx bx-download"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning btn-acoes" onclick="gerarEtiquetaLoteDireto(${lote.id}, true)" title="Imprimir">
+                            <i class="bx bx-printer"></i>
                         </button>
                         <button class="btn btn-sm btn-outline-danger btn-acoes" onclick="deletarLote(${lote.id})" title="Excluir">
                             <i class="bx bx-trash"></i>
@@ -930,6 +933,70 @@
                 .catch(error => {
                     esconderLoading();
                     mostrarNotificacao('Erro: ' + error.message, 'error');
+                });
+        }
+
+        function gerarEtiquetaLoteDireto(loteId, imprimir = false) {
+            mostrarLoading();
+
+            fetch(`/recebimento/api/lotes/${loteId}`)
+                .then(response => response.json())
+                .then(lote => {
+                    if (lote.error) {
+                        mostrarNotificacao(lote.error, 'error');
+                        esconderLoading();
+                        return;
+                    }
+
+                    const dadosEtiqueta = {
+                        numero_lote: lote.numero_lote,
+                        id_item: lote.id_item || '',
+                        data_recebimento: formatarDataApi(lote.data_recebimento || ''),
+                        data_fabricacao: formatarDataApi(lote.data_fabricacao || ''),
+                        data_validade: formatarDataApi(lote.data_validade || ''),
+                        quantidade: lote.quantidade || '',
+                        observacao: lote.observacao || '',
+                        numero_nota_fiscal: lote.numero_nota_fiscal || '',
+                        largura: 100,
+                        altura: 75,
+                        tamanho_fonte: 8,
+                        quantidade_etiquetas: 1
+                    };
+
+                    return fetch('/recebimento/api/gerar-etiqueta', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dadosEtiqueta)
+                    });
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao gerar etiqueta');
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+
+                    if (imprimir) {
+                        const printWindow = window.open(url, '_blank');
+                        printWindow.onload = function() {
+                            printWindow.print();
+                        };
+                        mostrarNotificacao('Abrindo impressao...', 'success');
+                    } else {
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `etiqueta_${new Date().toISOString().split('T')[0]}.pdf`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        mostrarNotificacao('Etiqueta baixada!', 'success');
+                    }
+                })
+                .catch(error => {
+                    mostrarNotificacao('Erro: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    esconderLoading();
                 });
         }
 
