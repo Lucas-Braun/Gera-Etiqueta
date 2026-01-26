@@ -505,6 +505,34 @@
         </div>
     </div>
 
+    <!-- Modal Quantidade Etiquetas -->
+    <div class="modal fade" id="modalQuantidadeEtiquetas" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">
+                        <i class="bx bx-printer"></i> Gerar Etiquetas
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2"><strong id="loteEtiquetaInfo"></strong></p>
+                    <label class="form-label">Quantidade de Etiquetas</label>
+                    <input type="number" class="form-control" id="qtdEtiquetasModal" value="1" min="1" max="100">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-outline-success" onclick="confirmarGerarEtiqueta(false)">
+                        <i class="bx bx-download"></i> Baixar
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="confirmarGerarEtiqueta(true)">
+                        <i class="bx bx-printer"></i> Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Loading -->
     <div class="loading" id="loading">
         <div class="text-center">
@@ -648,11 +676,8 @@
                         <button class="btn btn-sm btn-outline-primary btn-acoes" onclick="editarLote(${lote.id})" title="Editar">
                             <i class="bx bx-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-success btn-acoes" onclick="gerarEtiquetaLoteDireto(${lote.id}, false)" title="Baixar PDF">
-                            <i class="bx bx-download"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-warning btn-acoes" onclick="gerarEtiquetaLoteDireto(${lote.id}, true)" title="Imprimir">
-                            <i class="bx bx-printer"></i>
+                        <button class="btn btn-sm btn-outline-success btn-acoes" onclick="abrirModalEtiquetaLote(${lote.id})" title="Gerar Etiqueta">
+                            <i class="bx bx-barcode"></i>
                         </button>
                         <button class="btn btn-sm btn-outline-danger btn-acoes" onclick="deletarLote(${lote.id})" title="Excluir">
                             <i class="bx bx-trash"></i>
@@ -979,68 +1004,86 @@
                 });
         }
 
-        function gerarEtiquetaLoteDireto(loteId, imprimir = false) {
+        let loteIdParaEtiqueta = null;
+        let dadosLoteParaEtiqueta = null;
+
+        function abrirModalEtiquetaLote(loteId) {
+            const lote = todosLotes.find(l => l.id === loteId);
+            if (!lote) {
+                mostrarNotificacao('Lote não encontrado', 'error');
+                return;
+            }
+
+            loteIdParaEtiqueta = loteId;
+            dadosLoteParaEtiqueta = lote;
+            document.getElementById('loteEtiquetaInfo').textContent = `Lote: ${lote.numero_lote}`;
+            document.getElementById('qtdEtiquetasModal').value = 1;
+
+            const modal = new bootstrap.Modal(document.getElementById('modalQuantidadeEtiquetas'));
+            modal.show();
+        }
+
+        function confirmarGerarEtiqueta(imprimir) {
+            if (!dadosLoteParaEtiqueta) return;
+
+            const quantidade = parseInt(document.getElementById('qtdEtiquetasModal').value) || 1;
+            bootstrap.Modal.getInstance(document.getElementById('modalQuantidadeEtiquetas')).hide();
+
+            gerarEtiquetaLoteDireto(dadosLoteParaEtiqueta, imprimir, quantidade);
+        }
+
+        function gerarEtiquetaLoteDireto(lote, imprimir = false, quantidadeEtiquetas = 1) {
             mostrarLoading();
 
-            fetch(`/recebimento/api/lotes/${loteId}`)
-                .then(response => response.json())
-                .then(lote => {
-                    if (lote.error) {
-                        mostrarNotificacao(lote.error, 'error');
-                        esconderLoading();
-                        return;
-                    }
+            const dadosEtiqueta = {
+                numero_lote: lote.numero_lote,
+                id_item: lote.id_item || '',
+                data_recebimento: formatarDataApi(lote.data_recebimento || ''),
+                data_fabricacao: formatarDataApi(lote.data_fabricacao || ''),
+                data_validade: formatarDataApi(lote.data_validade || ''),
+                quantidade: lote.quantidade || '',
+                observacao: lote.observacao || '',
+                numero_nota_fiscal: lote.numero_nota_fiscal || '',
+                largura: 100,
+                altura: 75,
+                tamanho_fonte: 8,
+                quantidade_etiquetas: quantidadeEtiquetas
+            };
 
-                    const dadosEtiqueta = {
-                        numero_lote: lote.numero_lote,
-                        id_item: lote.id_item || '',
-                        data_recebimento: formatarDataApi(lote.data_recebimento || ''),
-                        data_fabricacao: formatarDataApi(lote.data_fabricacao || ''),
-                        data_validade: formatarDataApi(lote.data_validade || ''),
-                        quantidade: lote.quantidade || '',
-                        observacao: lote.observacao || '',
-                        numero_nota_fiscal: lote.numero_nota_fiscal || '',
-                        largura: 100,
-                        altura: 75,
-                        tamanho_fonte: 8,
-                        quantidade_etiquetas: 1
+            fetch('/recebimento/api/gerar-etiqueta', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosEtiqueta)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro ao gerar etiqueta');
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+
+                if (imprimir) {
+                    const printWindow = window.open(url, '_blank');
+                    printWindow.onload = function() {
+                        printWindow.print();
                     };
-
-                    return fetch('/recebimento/api/gerar-etiqueta', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(dadosEtiqueta)
-                    });
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Erro ao gerar etiqueta');
-                    return response.blob();
-                })
-                .then(blob => {
-                    const url = window.URL.createObjectURL(blob);
-
-                    if (imprimir) {
-                        const printWindow = window.open(url, '_blank');
-                        printWindow.onload = function() {
-                            printWindow.print();
-                        };
-                        mostrarNotificacao('Abrindo impressão...', 'success');
-                    } else {
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.download = `etiqueta_${new Date().toISOString().split('T')[0]}.pdf`;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        mostrarNotificacao('Etiqueta baixada!', 'success');
-                    }
-                })
-                .catch(error => {
-                    mostrarNotificacao('Erro: ' + error.message, 'error');
-                })
-                .finally(() => {
-                    esconderLoading();
-                });
+                    mostrarNotificacao('Abrindo impressão...', 'success');
+                } else {
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `etiqueta_${lote.numero_lote}_${new Date().toISOString().split('T')[0]}.pdf`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    mostrarNotificacao('Etiqueta baixada!', 'success');
+                }
+            })
+            .catch(error => {
+                mostrarNotificacao('Erro: ' + error.message, 'error');
+            })
+            .finally(() => {
+                esconderLoading();
+            });
         }
 
         // Inicializar

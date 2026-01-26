@@ -1,4 +1,17 @@
 {
-  "lotes": [],
-  "ultimo_id": 4
+  "lotes": [
+    {
+      "id": 5,
+      "numero_lote": "LOTE001",
+      "id_item": "123",
+      "data_recebimento": null,
+      "data_fabricacao": "2026-01-01",
+      "data_validade": "2026-01-26",
+      "quantidade": 100.0,
+      "numero_nota_fiscal": "123",
+      "observacao": null,
+      "dt_cadastro": "2026-01-26 15:31:59"
+    }
+  ],
+  "ultimo_id": 5
 }
