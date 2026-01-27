@@ -528,7 +528,7 @@
 
     <!-- Modal Quantidade Etiquetas -->
     <div class="modal fade" id="modalQuantidadeEtiquetas" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-success text-white">
                     <h5 class="modal-title">
@@ -537,9 +537,31 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="mb-2"><strong id="loteEtiquetaInfo"></strong></p>
-                    <label class="form-label">Quantidade de Etiquetas</label>
-                    <input type="number" class="form-control" id="qtdEtiquetasModal" value="1" min="1">
+                    <p class="mb-3"><strong id="loteEtiquetaInfo"></strong></p>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="mb-3">
+                                <label class="form-label">Largura (mm)</label>
+                                <input type="number" class="form-control" id="larguraModal" value="100">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="mb-3">
+                                <label class="form-label">Altura (mm)</label>
+                                <input type="number" class="form-control" id="alturaModal" value="75">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="mb-3">
+                                <label class="form-label">Fonte (pt)</label>
+                                <input type="number" class="form-control" id="fonteModal" value="8">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Quantidade de Etiquetas</label>
+                        <input type="number" class="form-control" id="qtdEtiquetasModal" value="1" min="1">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -1081,9 +1103,9 @@
                     quantidade: lote.quantidade || '',
                     observacao: lote.observacao || '',
                     numero_nota_fiscal: lote.numero_nota_fiscal || '',
-                    largura: 100,
-                    altura: 75,
-                    tamanho_fonte: 8,
+                    largura: document.getElementById('larguraModal').value || 100,
+                    altura: document.getElementById('alturaModal').value || 75,
+                    tamanho_fonte: document.getElementById('fonteModal').value || 8,
                     quantidade_etiquetas: quantidadeEtiquetas
                 };
 
