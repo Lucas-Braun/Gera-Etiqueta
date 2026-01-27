@@ -215,7 +215,17 @@
       "cnpj": "",
       "dun": "17898462409055",
       "dt_criacao": "2026-01-22"
+    },
+    {
+      "id": 26,
+      "numero": 859,
+      "descricao": "CX AMACIANTE DE ROUPAS CONCENTRADO SOL DO BRASIL COALA LAUNDRY 12X1 LT",
+      "peso": "12.778",
+      "validade_meses": 24,
+      "cnpj": "60.881.229/0004-05",
+      "dun": "17896017202410",
+      "dt_criacao": "2026-01-27"
     }
   ],
-  "ultimo_id": 25
+  "ultimo_id": 26
 }

@@ -184,7 +184,7 @@ def api_gerar_etiqueta():
         altura_mm = float(dados.get('altura', 75))
         tamanho_fonte_base = int(dados.get('tamanho_fonte', 8))
         quantidade_etiquetas = int(dados.get('quantidade_etiquetas', 1))
-        quantidade_etiquetas = max(1, min(100, quantidade_etiquetas))  # Limitar entre 1 e 100
+        quantidade_etiquetas = max(1, quantidade_etiquetas)
 
         # Converter mm para pontos
         largura = largura_mm * mm

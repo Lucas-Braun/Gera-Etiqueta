@@ -1,18 +1,92 @@
 {
   "lotes": [
     {
-      "id": 12,
-      "numero_lote": "02425TQ",
-      "id_item": "365",
-      "data_recebimento": "2026-01-26",
-      "data_fabricacao": "2025-12-09",
-      "data_validade": "2027-12-09",
-      "quantidade": 200.0,
-      "numero_nota_fiscal": "47966",
+      "id": 19,
+      "numero_lote": "1903",
+      "id_item": "5498",
+      "data_recebimento": null,
+      "data_fabricacao": "2026-01-27",
+      "data_validade": "2028-01-27",
+      "quantidade": 1.0,
+      "numero_nota_fiscal": "3154",
       "observacao": null,
-      "dt_cadastro": "2026-01-26 16:32:01",
-      "dt_atualizacao": "2026-01-26 16:36:45"
+      "dt_cadastro": "2026-01-27 07:15:16",
+      "dt_atualizacao": "2026-01-27 07:17:24"
+    },
+    {
+      "id": 23,
+      "numero_lote": "1968",
+      "id_item": "5244",
+      "data_recebimento": null,
+      "data_fabricacao": "2026-01-26",
+      "data_validade": "2028-01-26",
+      "quantidade": 150000.0,
+      "numero_nota_fiscal": null,
+      "observacao": null,
+      "dt_cadastro": "2026-01-27 08:38:06",
+      "dt_atualizacao": "2026-01-27 08:39:41"
+    },
+    {
+      "id": 26,
+      "numero_lote": "1381",
+      "id_item": "2881",
+      "data_recebimento": null,
+      "data_fabricacao": "2026-01-20",
+      "data_validade": "2028-01-20",
+      "quantidade": 22000.0,
+      "numero_nota_fiscal": null,
+      "observacao": null,
+      "dt_cadastro": "2026-01-27 09:01:34"
+    },
+    {
+      "id": 27,
+      "numero_lote": "215",
+      "id_item": "16538",
+      "data_recebimento": null,
+      "data_fabricacao": "2025-12-17",
+      "data_validade": "2027-12-17",
+      "quantidade": 25000.0,
+      "numero_nota_fiscal": null,
+      "observacao": null,
+      "dt_cadastro": "2026-01-27 09:05:53"
+    },
+    {
+      "id": 28,
+      "numero_lote": "142989",
+      "id_item": "4153",
+      "data_recebimento": "2026-01-26",
+      "data_fabricacao": "2026-01-23",
+      "data_validade": "2028-01-22",
+      "quantidade": 20.0,
+      "numero_nota_fiscal": "4197",
+      "observacao": null,
+      "dt_cadastro": "2026-01-27 09:16:52"
+    },
+    {
+      "id": 29,
+      "numero_lote": "2165",
+      "id_item": "3010",
+      "data_recebimento": null,
+      "data_fabricacao": "2026-01-27",
+      "data_validade": "2028-01-27",
+      "quantidade": 50000.0,
+      "numero_nota_fiscal": null,
+      "observacao": null,
+      "dt_cadastro": "2026-01-27 09:19:56"
+    },
+    {
+      "id": 30,
+      "numero_lote": "578448",
+      "id_item": "5308",
+      "data_recebimento": "2026-01-26",
+      "data_fabricacao": "2026-01-22",
+      "data_validade": "2028-01-22",
+      "quantidade": 600.0,
+      "numero_nota_fiscal": "4193",
+      "observacao": null,
+      "dt_cadastro": "2026-01-27 09:25:43",
+      "dt_atualizacao": "2026-01-27 09:29:11"
     }
   ],
-  "ultimo_id": 12
+  "ultimo_id": 30
 }
