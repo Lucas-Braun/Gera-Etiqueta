@@ -153,20 +153,8 @@ def api_atualizar_lote(lote_id):
 
 @recebimento_bp.route('/api/lotes/<int:lote_id>', methods=['DELETE'])
 def api_deletar_lote(lote_id):
-    """API para deletar lote"""
-    try:
-        lote, erro = deletar_lote(lote_id)
-
-        if erro:
-            return jsonify({'error': erro}), 404
-
-        return jsonify({
-            'success': True,
-            'message': 'Lote deletado com sucesso!'
-        })
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    """API para deletar lote - BLOQUEADO"""
+    return jsonify({'error': 'Exclusao de lotes esta desabilitada'}), 403
 
 
 @recebimento_bp.route('/api/gerar-etiqueta', methods=['POST'])

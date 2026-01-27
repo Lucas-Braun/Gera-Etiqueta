@@ -726,8 +726,8 @@
                         <button class="btn btn-sm btn-outline-success btn-acoes" onclick="abrirModalEtiquetaLote(${lote.id})" title="Gerar Etiqueta">
                             <i class="bx bx-barcode"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger btn-acoes" onclick="deletarLote(${lote.id})" title="Excluir">
-                            <i class="bx bx-trash"></i>
+                        <button class="btn btn-sm btn-outline-danger btn-acoes" onclick="deletarLote(${lote.id})" title="Excluir" disabled style="opacity:0.4; cursor:not-allowed;">
+                            <i class="bx bx-lock-alt"></i>
                         </button>
                     </td>
                 `;
