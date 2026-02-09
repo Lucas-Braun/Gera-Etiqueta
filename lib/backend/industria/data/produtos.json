@@ -225,7 +225,18 @@
       "cnpj": "60.881.229/0004-05",
       "dun": "17896017202410",
       "dt_criacao": "2026-01-27"
+    },
+    {
+      "id": 27,
+      "numero": 860,
+      "descricao": "AMACIANTE CONC. THE QUEEN COALA LAUNDRY 12X1 LT",
+      "peso": "12.778",
+      "validade_meses": 24,
+      "cnpj": "60.881.229/0004-05",
+      "dun": "17896017202403",
+      "dt_criacao": "2026-01-27",
+      "dt_atualizacao": "2026-01-27"
     }
   ],
-  "ultimo_id": 26
+  "ultimo_id": 27
 }
