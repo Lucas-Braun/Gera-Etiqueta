@@ -244,14 +244,6 @@ def api_gerar_etiqueta():
             texto_largura = area_util_largura
             y = y_start
 
-            # TITULO PRINCIPAL
-            c.setFont("Helvetica-Bold", titulo_fonte)
-            titulo = "CONTROLE DE LOTE"
-            titulo_largura = c.stringWidth(titulo, "Helvetica-Bold", titulo_fonte)
-            titulo_x = (largura - titulo_largura) / 2
-            c.drawString(titulo_x, y, titulo)
-            y -= titulo_fonte * 1.0
-
             # NUMERO DO LOTE
             if numero_lote:
                 c.setFont("Helvetica-Bold", lote_fonte)
