@@ -236,7 +236,17 @@
       "dun": "17896017202403",
       "dt_criacao": "2026-01-27",
       "dt_atualizacao": "2026-01-27"
+    },
+    {
+      "id": 28,
+      "numero": 17701,
+      "descricao": "REFIL AROMATIZADOR BENZ 500 ML",
+      "peso": "500 ML",
+      "validade_meses": 24,
+      "cnpj": "05953723000390",
+      "dun": "",
+      "dt_criacao": "2026-02-09"
     }
   ],
-  "ultimo_id": 27
+  "ultimo_id": 28
 }
