@@ -202,6 +202,11 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="ean" class="form-label">EAN</label>
+                            <input type="text" class="form-control" id="ean" placeholder="Ex: 7891234567890">
+                        </div>
+
+                        <div class="mb-3">
                             <label for="unidadeMedida" class="form-label">Unidade de Medida</label>
                             <input type="text" class="form-control" id="unidadeMedida" placeholder="Ex: UN, KG, MT">
                         </div>
@@ -256,6 +261,7 @@
                                 <tr>
                                     <th>Nº Item</th>
                                     <th>Descrição</th>
+                                    <th>EAN</th>
                                     <th>Unidade</th>
                                     <th>Ações</th>
                                 </tr>
@@ -343,7 +349,7 @@
             document.getElementById('totalRegistros').textContent = todosItens.length;
 
             if (itensFiltrados.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center">Nenhum item encontrado</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center">Nenhum item encontrado</td></tr>';
                 document.getElementById('registrosMostrados').textContent = '0';
                 document.getElementById('paginacao').innerHTML = '';
                 return;
@@ -360,6 +366,7 @@
                 tr.innerHTML = `
                     <td>${item.numero_item}</td>
                     <td title="${item.descricao}">${item.descricao.substring(0, 40)}${item.descricao.length > 40 ? '...' : ''}</td>
+                    <td>${item.ean || '-'}</td>
                     <td>${item.unidade_medida || '-'}</td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary btn-acoes" onclick="editarItem(${item.id})" title="Editar">
@@ -454,7 +461,8 @@
             const dados = {
                 numero_item: document.getElementById('numeroItem').value.trim(),
                 descricao: document.getElementById('descricao').value.trim(),
-                unidade_medida: document.getElementById('unidadeMedida').value.trim()
+                unidade_medida: document.getElementById('unidadeMedida').value.trim(),
+                ean: document.getElementById('ean').value.trim()
             };
 
             let url, method;
@@ -499,6 +507,7 @@
             document.getElementById('itemIdEdicao').value = item.id;
             document.getElementById('numeroItem').value = item.numero_item;
             document.getElementById('descricao').value = item.descricao || '';
+            document.getElementById('ean').value = item.ean || '';
             document.getElementById('unidadeMedida').value = item.unidade_medida || '';
 
             document.getElementById('tituloFormulario').innerHTML = '<i class="bx bx-edit"></i> Editar Item';

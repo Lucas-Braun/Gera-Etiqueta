@@ -43,7 +43,7 @@ def buscar_item_por_numero(numero_item):
     return None
 
 
-def criar_item(numero_item, descricao, unidade_medida):
+def criar_item(numero_item, descricao, unidade_medida, ean=''):
     """Cria um novo item"""
     dados = carregar_itens()
 
@@ -51,7 +51,8 @@ def criar_item(numero_item, descricao, unidade_medida):
         'id': dados['proximo_id'],
         'numero_item': numero_item,
         'descricao': descricao,
-        'unidade_medida': unidade_medida
+        'unidade_medida': unidade_medida,
+        'ean': ean
     }
 
     dados['itens'].append(novo_item)
@@ -61,7 +62,7 @@ def criar_item(numero_item, descricao, unidade_medida):
     return novo_item
 
 
-def atualizar_item(item_id, numero_item, descricao, unidade_medida):
+def atualizar_item(item_id, numero_item, descricao, unidade_medida, ean=''):
     """Atualiza um item existente"""
     dados = carregar_itens()
 
@@ -70,6 +71,7 @@ def atualizar_item(item_id, numero_item, descricao, unidade_medida):
             item['numero_item'] = numero_item
             item['descricao'] = descricao
             item['unidade_medida'] = unidade_medida
+            item['ean'] = ean
             salvar_itens(dados)
             return item
 

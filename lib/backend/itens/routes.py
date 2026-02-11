@@ -59,11 +59,12 @@ def api_criar_item():
     numero_item = dados.get('numero_item', '').strip()
     descricao = dados.get('descricao', '').strip()
     unidade_medida = dados.get('unidade_medida', '').strip()
+    ean = dados.get('ean', '').strip()
 
     if not numero_item:
         return jsonify({'error': 'Numero do item e obrigatorio'}), 400
 
-    novo_item = criar_item(numero_item, descricao, unidade_medida)
+    novo_item = criar_item(numero_item, descricao, unidade_medida, ean)
     return jsonify({
         'success': True,
         'message': 'Item criado com sucesso',
@@ -79,11 +80,12 @@ def api_atualizar_item(item_id):
     numero_item = dados.get('numero_item', '').strip()
     descricao = dados.get('descricao', '').strip()
     unidade_medida = dados.get('unidade_medida', '').strip()
+    ean = dados.get('ean', '').strip()
 
     if not numero_item:
         return jsonify({'error': 'Numero do item e obrigatorio'}), 400
 
-    item = atualizar_item(item_id, numero_item, descricao, unidade_medida)
+    item = atualizar_item(item_id, numero_item, descricao, unidade_medida, ean)
     if item:
         return jsonify({
             'success': True,
