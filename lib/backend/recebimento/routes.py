@@ -375,12 +375,11 @@ def api_gerar_etiqueta():
 
             # RODAPE
             agora_brasilia = datetime.now() - timedelta(hours=3)
-            data_geracao = agora_brasilia.strftime('%d/%m/%Y %H:%M')
 
             rodape_y = y_margin + rodape_fonte
 
             c.setFont("Helvetica", rodape_fonte)
-            rodape_texto = f"ID: {codigo_qr}  |  Gerado: {data_geracao}"
+            rodape_texto = f"ID: {codigo_qr}"
             rodape_largura = c.stringWidth(rodape_texto, "Helvetica", rodape_fonte)
             rodape_x = (largura - rodape_largura) / 2
             c.drawString(rodape_x, rodape_y, rodape_texto)
