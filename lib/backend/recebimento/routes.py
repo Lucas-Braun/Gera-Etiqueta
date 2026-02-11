@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, render_template, request, jsonify, send_file
-from datetime import datetime
+from datetime import datetime, timedelta
 import io
 import qrcode
 from PIL import Image
 import random
 import string
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 
 from lib.backend.recebimento.service import (
     listar_lotes,
@@ -397,6 +399,83 @@ def api_gerar_etiqueta():
         return send_file(
             buffer,
             mimetype='application/pdf',
+            as_attachment=True,
+            download_name=nome_arquivo
+        )
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+
+@recebimento_bp.route('/api/exportar-xls')
+def exportar_xls():
+    """Exportar todos os lotes para Excel"""
+    try:
+        lotes = listar_lotes()
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Lotes Recebimento"
+
+        # Estilo do cabecalho
+        header_font = Font(bold=True, color="FFFFFF", size=11)
+        header_fill = PatternFill(start_color="28A745", end_color="28A745", fill_type="solid")
+        header_alignment = Alignment(horizontal="center", vertical="center")
+        thin_border = Border(
+            left=Side(style='thin'),
+            right=Side(style='thin'),
+            top=Side(style='thin'),
+            bottom=Side(style='thin')
+        )
+
+        colunas = ["ID", "Número do Lote", "ID Item", "Data Recebimento", "Data Fabricação",
+                    "Data Validade", "Quantidade", "Nota Fiscal", "Observação"]
+
+        for col_num, titulo in enumerate(colunas, 1):
+            cell = ws.cell(row=1, column=col_num, value=titulo)
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = header_alignment
+            cell.border = thin_border
+
+        # Dados
+        for row_num, lote in enumerate(lotes, 2):
+            valores = [
+                lote.get('id', ''),
+                lote.get('numero_lote', ''),
+                lote.get('id_item', ''),
+                lote.get('data_recebimento', ''),
+                lote.get('data_fabricacao', ''),
+                lote.get('data_validade', ''),
+                lote.get('quantidade', ''),
+                lote.get('numero_nota_fiscal', ''),
+                lote.get('observacao', '')
+            ]
+            for col_num, valor in enumerate(valores, 1):
+                cell = ws.cell(row=row_num, column=col_num, value=valor)
+                cell.border = thin_border
+
+        # Ajustar largura das colunas
+        for col in ws.columns:
+            max_length = 0
+            col_letter = col[0].column_letter
+            for cell in col:
+                if cell.value:
+                    max_length = max(max_length, len(str(cell.value)))
+            ws.column_dimensions[col_letter].width = min(max_length + 4, 40)
+
+        buffer = io.BytesIO()
+        wb.save(buffer)
+        buffer.seek(0)
+
+        agora = (datetime.now() - timedelta(hours=3)).strftime("%Y%m%d_%H%M%S")
+        nome_arquivo = f'lotes_recebimento_{agora}.xlsx'
+
+        return send_file(
+            buffer,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             as_attachment=True,
             download_name=nome_arquivo
         )

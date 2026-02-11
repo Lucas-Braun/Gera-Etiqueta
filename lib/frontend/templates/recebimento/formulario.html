@@ -392,9 +392,14 @@
                         <h5 class="section-title mb-0">
                             <i class="bx bx-list-ul"></i> Lotes Cadastrados
                         </h5>
-                        <button class="btn btn-sm btn-outline-primary" onclick="consultarLotes()">
-                            <i class="bx bx-refresh"></i> Atualizar
-                        </button>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-primary" onclick="consultarLotes()">
+                                <i class="bx bx-refresh"></i> Atualizar
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" onclick="exportarXLS()">
+                                <i class="bx bx-spreadsheet"></i> Exportar XLS
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Filtros -->
@@ -1226,6 +1231,31 @@
             timeoutBuscaItem = setTimeout(() => {
                 buscarItemPorNumero(numeroItem);
             }, 500);
+        }
+
+        function exportarXLS() {
+            mostrarLoading();
+            fetch('/recebimento/api/exportar-xls')
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao exportar');
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `lotes_recebimento_${new Date().toISOString().split('T')[0]}.xlsx`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    mostrarNotificacao('Exportação concluída!', 'success');
+                })
+                .catch(error => {
+                    mostrarNotificacao('Erro: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    esconderLoading();
+                });
         }
 
         // Inicializar
