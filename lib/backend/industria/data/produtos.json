@@ -28,9 +28,10 @@
       "descricao": "ACIDO EMERSON 12X1",
       "peso": "13,2",
       "validade_meses": 24,
-      "cnpj": "60.881.229/0004-05",
+      "cnpj": "",
       "dun": "20719",
-      "dt_criacao": "2026-01-14"
+      "dt_criacao": "2026-01-14",
+      "dt_atualizacao": "2026-03-05"
     },
     {
       "id": 8,
@@ -246,7 +247,107 @@
       "cnpj": "05953723000390",
       "dun": "",
       "dt_criacao": "2026-02-09"
+    },
+    {
+      "id": 29,
+      "numero": 851,
+      "descricao": "LAVA ROUPAS ORQUIDEA NEGRA 3X5 L COALA",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "60.881.229/0004-05",
+      "dun": "17897744506031",
+      "dt_criacao": "2026-02-18"
+    },
+    {
+      "id": 30,
+      "numero": 848,
+      "descricao": "LAVA ROUPAS CHA BRANCO 4X3 L COALA",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "60.881.229/0004-05",
+      "dun": "17897744506000",
+      "dt_criacao": "2026-02-19"
+    },
+    {
+      "id": 31,
+      "numero": 849,
+      "descricao": "LAVA ROUPAS ORQUIDEA NEGRA 4X3 L (COALA)",
+      "peso": "12.778",
+      "validade_meses": 24,
+      "cnpj": "60881229000405",
+      "dun": "17897744506024",
+      "dt_criacao": "2026-02-20"
+    },
+    {
+      "id": 32,
+      "numero": 850,
+      "descricao": "LAVA ROUPAS CHA BRANCO 3X5 L COALA",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "60.881.229/0004-05",
+      "dun": "17897744506017",
+      "dt_criacao": "2026-02-23"
+    },
+    {
+      "id": 33,
+      "numero": 856,
+      "descricao": "LAVA ROUPAS THE QUEEN 4X3 L COALA",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "60.881.229/0004-05",
+      "dun": "17896017202427",
+      "dt_criacao": "2026-02-25"
+    },
+    {
+      "id": 34,
+      "numero": 18408,
+      "descricao": "BARBAREX LIMPA ALUMINIO 3X5 LT (LCT)",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "27898462403951",
+      "dt_criacao": "2026-03-02"
+    },
+    {
+      "id": 35,
+      "numero": 855,
+      "descricao": "LAVA ROUPAS SOL DO BRASIL 4X3 L COALA",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "60.881.229/0004-05",
+      "dun": "17896017202434",
+      "dt_criacao": "2026-03-05"
+    },
+    {
+      "id": 36,
+      "numero": 857,
+      "descricao": "LAVA ROUPAS SOL DO BRASIL 3X5 L COALA",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "60.881.229/0004-05",
+      "dun": "17896017202458",
+      "dt_criacao": "2026-03-09"
+    },
+    {
+      "id": 37,
+      "numero": 858,
+      "descricao": "LAVA ROUPAS THE QUEEN 3X5 L COALA",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "60.881.229/0004-05",
+      "dun": "27896017202448",
+      "dt_criacao": "2026-03-12"
+    },
+    {
+      "id": 38,
+      "numero": 29544,
+      "descricao": "FLOTADOR BARBAREX 6X1 LT-COM TAMPA+GATILHO",
+      "peso": "",
+      "validade_meses": 24,
+      "cnpj": "",
+      "dun": "27899449400901",
+      "dt_criacao": "2026-03-30"
     }
   ],
-  "ultimo_id": 28
+  "ultimo_id": 38
 }
